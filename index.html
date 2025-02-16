@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run C in Browser</title>
+</head>
+<body>
+    <h2>Enter Input:</h2>
+    <textarea id="inputText" rows="4" cols="50"></textarea><br>
+    <button onclick="runCProgram()">Submit</button>
+    <button onclick="doubleString()">Double</button>
+    <h3>Output:</h3>
+    <pre id="outputText"></pre>
+
+    <script src="espresso_bin/espresso.js"></script>
+    <script>
+        let run_espresso;
+
+        // Load WebAssembly
+        Module.onRuntimeInitialized = function() {
+            run_espresso = Module.cwrap('run_espresso', 'string', ['string']);
+        };
+
+        function runCProgram() {
+            const input = document.getElementById('inputText').value;
+            let result = run_espresso(input);  // Call the C function
+            console.log(result)
+            console.log(input.length, result.length)
+            document.getElementById('outputText').innerText = `Return: ${result}`;
+        }
+
+        function doubleString() {
+            const e = document.getElementById('inputText')
+            e.value = e.value + e.value
+        }
+    </script>
+</body>
+</html>
