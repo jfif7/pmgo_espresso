@@ -1,11 +1,19 @@
 cmake_minimum_required(VERSION 3.14)
-# cmake_policy(SET CMP0015 NEW)
 
 project(pmgo_espresso VERSION 0.1)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/espresso_bin)
+include(ExternalProject)
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+ExternalProject_Add(espresso
+  SOURCE_DIR ${CMAKE_SOURCE_DIR}/espresso_logic
+  BINARY_DIR ${CMAKE_BINARY_DIR}/espresso
+  CMAKE_CACHE_ARGS
+    -DCMAKE_TOOLCHAIN_FILE:FILEPATH=$ENV{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake
+  INSTALL_COMMAND ""
+  )
 
-add_executable(espresso  espresso_logic/wasm_bridge.cpp)
+ExternalProject_Add(espresso_test
+  SOURCE_DIR ${CMAKE_SOURCE_DIR}/espresso_logic/test
+  BINARY_DIR ${CMAKE_BINARY_DIR}/test
+  INSTALL_COMMAND ""
+  )

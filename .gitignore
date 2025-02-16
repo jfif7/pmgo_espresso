@@ -4,6 +4,8 @@
 *.o
 
 # CMake
-CMakeFiles
-cmake_install.cmake
-CMakeCache.txt
+Makefile
+build/
+
+# GoogleTest
+_deps/
