@@ -44,8 +44,8 @@ pcover make_sparse(pset_family F, pset_family D, pset_family R) {
 */
 
 pcover mv_reduce(pset_family F, pset_family D) {
-    register int i, var;
-    register pcube p, p1, last;
+    int i, var;
+    pcube p, p1, last;
     int index;
     pcover F1, D1;
     pcube *F_cube_table;

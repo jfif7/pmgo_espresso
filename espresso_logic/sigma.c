@@ -20,13 +20,13 @@
  * Output:
  * 	signature cube
  */
-pcube get_sigma(pset_family R, register pset c) {
+pcube get_sigma(pset_family R, pset c) {
     pcover BB;
     pcube out_part_r, s;
-    register pcube r, b;
-    register int i;
-    register int w, last;
-    register unsigned int x;
+    pcube r, b;
+    int i;
+    int w, last;
+    unsigned int x;
 
     out_part_r = new_cube();
     s = new_cube();

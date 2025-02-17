@@ -53,8 +53,8 @@ pcover cb_recur_sharp(pset c, pset_family T, int first, int last, int level) {
 
 /* sharp -- form the sharp product between two cubes */
 pcover sharp(pset a, pset b) {
-    register int var;
-    register pcube d = cube.temp[0], temp = cube.temp[1], temp1 = cube.temp[2];
+    int var;
+    pcube d = cube.temp[0], temp = cube.temp[1], temp1 = cube.temp[2];
     pcover r = new_cover(cube.num_vars);
 
     if (cdist0(a, b)) {
@@ -73,7 +73,7 @@ pcover sharp(pset a, pset b) {
 
 pcover make_disjoint(pset_family A) {
     pcover R, new;
-    register pset last, p;
+    pset last, p;
 
     R = new_cover(0);
     foreach_set(A, last, p) {
@@ -85,7 +85,7 @@ pcover make_disjoint(pset_family A) {
 
 /* cv_dsharp -- disjoint-sharp product between two covers */
 pcover cv_dsharp(pset_family A, pset_family B) {
-    register pcube last, p;
+    pcube last, p;
     pcover T;
 
     T = new_cover(0);
@@ -124,7 +124,7 @@ pcover cb_dsharp(pset c, pset_family T) {
 
 /* dsharp -- form the disjoint-sharp product between two cubes */
 pcover dsharp(pset a, pset b) {
-    register pcube mask, diff, and, temp, temp1 = cube.temp[0];
+    pcube mask, diff, and, temp, temp1 = cube.temp[0];
     int var;
     pcover r;
 
@@ -165,7 +165,7 @@ pcover dsharp(pset a, pset b) {
 #define MAGIC 500 /* save 500 cubes before containment */
 
 pcover cv_intersect(pset_family A, pset_family B) {
-    register pcube pi, pj, lasti, lastj, pt;
+    pcube pi, pj, lasti, lastj, pt;
     pcover T, Tsave = NULL;
 
     /* How large should each temporary result cover be ? */

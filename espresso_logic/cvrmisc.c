@@ -2,7 +2,7 @@
 
 /* cost -- compute the cost of a cover */
 void cover_cost(pset_family F, pcost cost) {
-    register pcube p, last;
+    pcube p, last;
     pcube *T;
     int var;
 
@@ -75,7 +75,7 @@ void size_stamp(pset_family T, char *name) {
 }
 
 /* print_trace -- print a line reporting size and time after a function */
-void print_trace(pset_family T, char *name, long int time) {
+void print_trace(pset_family T, const char *name, long int time) {
     printf("# %s\tTime was %s, cost is %s\n", name, print_time(time),
            print_cost(T));
     (void)fflush(stdout);

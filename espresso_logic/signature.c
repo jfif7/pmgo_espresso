@@ -73,9 +73,9 @@ pcover generate_primes(pset_family F, pset_family R) {
     pcube c, r, lastc, b, lastb;
     pcover BB, PRIMES;
     pcube odd, even, out_part_r;
-    register int i;
-    register int w, last;
-    register unsigned int x;
+    int i;
+    int w, last;
+    unsigned int x;
     int count;
 
     out_part_r = new_cube();

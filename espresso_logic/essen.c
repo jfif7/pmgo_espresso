@@ -25,7 +25,7 @@
 */
 
 pcover essential(pset_family *Fp, pset_family *Dp) {
-    register pcube last, p;
+    pcube last, p;
     pcover E, F = *Fp, D = *Dp;
 
     /* set all cubes in F active */
@@ -87,9 +87,9 @@ bool essen_cube(pset_family F, pset_family D, pset c) {
 /*
  *  cb_consensus -- compute consensus(T # c, c)
  */
-pcover cb_consensus(register pset_family T, register pset c) {
-    register pcube temp, last, p;
-    register pcover R;
+pcover cb_consensus(pset_family T, pset c) {
+    pcube temp, last, p;
+    pcover R;
 
     R = new_cover(T->count * 2);
     temp = new_cube();
@@ -117,11 +117,11 @@ pcover cb_consensus(register pset_family T, register pset c) {
  *  form the sharp-consensus for p and c when they intersect
  *  What we are forming is consensus(p # c, c).
  */
-pcover cb_consensus_dist0(pset_family R, register pset p, register pset c) {
+pcover cb_consensus_dist0(pset_family R, pset p, pset c) {
     int var;
     bool got_one;
-    register pcube temp, mask;
-    register pcube p_diff_c = cube.temp[0], p_and_c = cube.temp[1];
+    pcube temp, mask;
+    pcube p_diff_c = cube.temp[0], p_and_c = cube.temp[1];
 
     /* If c contains p, then this gives us no information for essential test */
     if (setp_implies(p, c)) {

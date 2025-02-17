@@ -13,8 +13,8 @@
     field read from the input is symbolic.
 */
 void cube_setup(void) {
-    register int i, var;
-    register pcube p;
+    int i, var;
+    pcube p;
 
     if (cube.num_binary_vars < 0 || cube.num_vars < cube.num_binary_vars)
         fatal("cube size is silly, error in .i/.o or .mv");
@@ -78,7 +78,7 @@ void cube_setup(void) {
     external routine limit on the IBM !)
 */
 void setdown_cube(void) {
-    register int i, var;
+    int i, var;
 
     FREE(cube.first_part);
     FREE(cube.last_part);

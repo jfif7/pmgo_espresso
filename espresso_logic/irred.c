@@ -70,8 +70,8 @@ void mark_irredundant(pset_family F, pset_family D) {
 
 void irred_split_cover(pset_family F, pset_family D, pset_family *E,
                        pset_family *Rt, pset_family *Rp) {
-    register pcube p, last;
-    register int index;
+    pcube p, last;
+    int index;
     pcover R;
     pcube *FD, *ED;
 
@@ -130,7 +130,7 @@ void irred_split_cover(pset_family F, pset_family D, pset_family *E,
  */
 
 sm_matrix *irred_derive_table(pset_family D, pset_family E, pset_family Rp) {
-    register pcube last, p, *list;
+    pcube last, p, *list;
     sm_matrix *table;
     int size_last_dominance, i;
 
@@ -178,8 +178,8 @@ bool cube_is_covered(pset *T, pset c) { return tautology(cofactor(T, c)); }
 bool tautology(pset *T)
 /* T will be disposed of */
 {
-    register pcube cl, cr;
-    register int best, result;
+    pcube cl, cr;
+    int best, result;
     static int taut_level = 0;
 
     if (debug & TAUT) {
@@ -210,7 +210,7 @@ bool tautology(pset *T)
 bool taut_special_cases(pset *T)
 /* will be disposed if answer is determined */
 {
-    register pcube *T1, *Tsave, p, ceil = cube.temp[0], temp = cube.temp[1];
+    pcube *T1, *Tsave, p, ceil = cube.temp[0], temp = cube.temp[1];
     pcube *A, *B;
     int var;
 
@@ -301,8 +301,8 @@ static void ftautology(pset *T, sm_matrix *table)
 /* T will be disposed of */
 
 {
-    register pcube cl, cr;
-    register int best;
+    pcube cl, cr;
+    int best;
     static int ftaut_level = 0;
 
     if (debug & TAUT) {
@@ -332,7 +332,7 @@ static bool ftaut_special_cases(pset *T, sm_matrix *table)
 /* will be disposed if answer is determined */
 
 {
-    register pcube *T1, *Tsave, p, temp = cube.temp[0], ceil = cube.temp[1];
+    pcube *T1, *Tsave, p, temp = cube.temp[0], ceil = cube.temp[1];
     int var, rownum;
 
     /* Check for a row of all 1's in the essential cubes */

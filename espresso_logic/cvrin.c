@@ -9,16 +9,16 @@
 static bool line_length_error;
 static int lineno;
 
-void skip_line(register FILE *fpin, register FILE *fpout, register int echo) {
-    register int ch;
+void skip_line(FILE *fpin, FILE *fpout, int echo) {
+    int ch;
     while ((ch = getc(fpin)) != EOF && ch != '\n')
         if (echo) putc(ch, fpout);
     if (echo) putc('\n', fpout);
     lineno++;
 }
 
-char *get_word(register FILE *fp, register char *word) {
-    register int ch, i = 0;
+char *get_word(FILE *fp, char *word) {
+    int ch, i = 0;
     while ((ch = getc(fp)) != EOF && isspace(ch));
     word[i++] = ch;
     while ((ch = getc(fp)) != EOF && !isspace(ch)) word[i++] = ch;
@@ -29,8 +29,8 @@ char *get_word(register FILE *fp, register char *word) {
 /*
  *  Yes, I know this routine is a mess
  */
-void read_cube(register FILE *fp, pPLA PLA) {
-    register int var, i;
+void read_cube(FILE *fp, pPLA PLA) {
+    int var, i;
     pcube cf = cube.temp[0], cr = cube.temp[1], cd = cube.temp[2];
     bool savef = FALSE, saved = FALSE, saver = FALSE;
     char token[256];               /* for kiss read hack */

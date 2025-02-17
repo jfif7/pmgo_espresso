@@ -5,7 +5,7 @@ static pset Gminterm;
 
 pset minterms(pset_family T) {
     int size, var;
-    register pcube last;
+    pcube last;
 
     size = 1;
     for (var = 0; var < cube.num_vars; var++) size *= cube.part_size[var];

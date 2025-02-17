@@ -1,9 +1,9 @@
 #include "mincov_int.h"
 
 int sm_row_dominance(sm_matrix *A) {
-    register sm_row *prow, *prow1;
-    register sm_col *pcol, *least_col;
-    register sm_element *p, *pnext;
+    sm_row *prow, *prow1;
+    sm_col *pcol, *least_col;
+    sm_element *p, *pnext;
     int rowcnt;
 
     rowcnt = A->nrows;
@@ -38,9 +38,9 @@ int sm_row_dominance(sm_matrix *A) {
 }
 
 int sm_col_dominance(sm_matrix *A, int *weight) {
-    register sm_row *prow;
-    register sm_col *pcol, *pcol1;
-    register sm_element *p;
+    sm_row *prow;
+    sm_col *pcol, *pcol1;
+    sm_element *p;
     sm_row *least_row;
     sm_col *next_col;
     int colcnt;

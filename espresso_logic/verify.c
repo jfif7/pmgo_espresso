@@ -71,8 +71,8 @@ bool PLA_verify(pPLA PLA1, pPLA PLA2) {
  *  Association is strictly by the names of the columns of the cover.
  */
 void PLA_permute(pPLA PLA1, pPLA PLA2) {
-    register int i, j, *permute, npermute;
-    register char *labi;
+    int i, j, *permute, npermute;
+    char *labi;
     char **label;
 
     /* determine which columns of PLA1 to save, and place these in the list

@@ -149,10 +149,10 @@ static void clear(void) { stack_p = 0; }
 void setup_bw(pset_family R, pset c) {
     pcube out_part_r;
     int size = R->count;
-    register int i;
+    int i;
     pcube b, r;
-    register int w, last;
-    register unsigned int x;
+    int w, last;
+    unsigned int x;
 
     /* Allocate memory */
     alloc_list(size);

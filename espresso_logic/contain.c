@@ -85,8 +85,8 @@ pset_family sf_ind_contain(pset_family A, int *row_indices)
 pset_family sf_dupl(pset_family A)
 /* disposes of A */
 {
-    register int cnt;
-    register pset *A1;
+    int cnt;
+    pset *A1;
     pset_family R;
 
     A1 = sf_sort(A, (qsort_compare_func)descend);    /* sort the set family */
@@ -150,11 +150,11 @@ pset_family d1merge(pset_family A, int var)
 }
 
 /* d1_rm_equal -- distance-1 merge (merge cubes which are equal under a mask) */
-int d1_rm_equal(register pset *A1, qsort_compare_func compare)
+int d1_rm_equal(pset *A1, qsort_compare_func compare)
 /* array of set pointers */
 /* comparison function */
 {
-    register int i, j, dest;
+    int i, j, dest;
 
     dest = 0;
     if (A1[0] != (pcube)NULL) {
@@ -178,7 +178,7 @@ int rm_equal(pset *A1, qsort_compare_func compare)
 /* updated in place */
 
 {
-    register pset *p, *pdest = A1;
+    pset *p, *pdest = A1;
 
     if (*A1 != NULL) { /* If more than one set */
         for (p = A1 + 1; *p != NULL; p++)
@@ -193,7 +193,7 @@ int rm_equal(pset *A1, qsort_compare_func compare)
 int rm_contain(pset *A1)
 /* updated in place */
 {
-    register pset *pa, *pb, *pcheck = NULL, a, b;
+    pset *pa, *pb, *pcheck = NULL, a, b;
     pset *pdest = A1;
     int last_size = -1;
 
@@ -219,7 +219,7 @@ int rm_contain(pset *A1)
 int rm_rev_contain(pset *A1)
 /* updated in place */
 {
-    register pset *pa, *pb, *pcheck = NULL, a, b;
+    pset *pa, *pb, *pcheck = NULL, a, b;
     pset *pdest = A1;
     int last_size = -1;
 
@@ -242,12 +242,11 @@ int rm_rev_contain(pset *A1)
 }
 
 /* rm2_equal -- check two sorted arrays of set pointers for equal cubes */
-int rm2_equal(register pset *A1, register pset *B1, pset *E1,
-              qsort_compare_func compare)
+int rm2_equal(pset *A1, pset *B1, pset *E1, qsort_compare_func compare)
 /* updated in place */
 
 {
-    register pset *pda = A1, *pdb = B1, *pde = E1;
+    pset *pda = A1, *pdb = B1, *pde = E1;
 
     /* Walk through the arrays advancing pointer to larger cube */
     for (; *A1 != NULL && *B1 != NULL;) switch ((*compare)(A1, B1)) {
@@ -276,7 +275,7 @@ int rm2_contain(pset *A1, pset *B1)
 /* updated in place */
 /* unchanged */
 {
-    register pset *pa, *pb, a, b, *pdest = A1;
+    pset *pa, *pb, a, b, *pdest = A1;
 
     /* for each set in the first array ... */
     for (pa = A1; (a = *pa++) != NULL;) {
@@ -297,7 +296,7 @@ int rm2_contain(pset *A1, pset *B1)
 
 /* sf_sort -- sort the sets of A */
 pset *sf_sort(pset_family A, qsort_compare_func compare) {
-    register pset p, last, *pdest, *A1;
+    pset p, last, *pdest, *A1;
 
     /* Create a single array pointing to each cube of A */
     pdest = A1 = ALLOC(pset, A->count + 1);
@@ -313,8 +312,8 @@ pset *sf_sort(pset_family A, qsort_compare_func compare) {
 }
 
 /* sf_list -- make a list of pointers to the sets in a set family */
-pset *sf_list(register pset_family A) {
-    register pset p, last, *pdest, *A1;
+pset *sf_list(pset_family A) {
+    pset p, last, *pdest, *A1;
 
     /* Create a single array pointing to each cube of A */
     pdest = A1 = ALLOC(pset, A->count + 1);
@@ -325,7 +324,7 @@ pset *sf_list(register pset_family A) {
 
 /* sf_unlist -- make a set family out of a list of pointers to sets */
 pset_family sf_unlist(pset *A1, int totcnt, int size) {
-    register pset pr, p, *pa;
+    pset pr, p, *pa;
     pset_family R = sf_new(totcnt, size);
 
     R->count = totcnt;
@@ -337,9 +336,9 @@ pset_family sf_unlist(pset *A1, int totcnt, int size) {
 
 /* sf_ind_unlist -- make a set family out of a list of pointers to sets */
 pset_family sf_ind_unlist(pset *A1, int totcnt, int size, int *row_indices,
-                          register pset pfirst) {
-    register pset pr, p, *pa;
-    register int i, *new_row_indices;
+                          pset pfirst) {
+    pset pr, p, *pa;
+    int i, *new_row_indices;
     pset_family R = sf_new(totcnt, size);
 
     R->count = totcnt;
@@ -360,7 +359,7 @@ pset_family sf_merge(pset *A1, pset *B1, pset *E1, int totcnt, int size)
 /* will be disposed of */
 
 {
-    register pset pr, ps, *pmin, *pmid, *pmax;
+    pset pr, ps, *pmin, *pmid, *pmax;
     pset_family R;
     pset *temp[3], *swap;
     int i, j, n;

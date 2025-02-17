@@ -29,7 +29,7 @@ void solution_add(solution_t *sol, int *weight, int col) {
 }
 
 void solution_accept(solution_t *sol, sm_matrix *A, int *weight, int col) {
-    register sm_element *p, *pnext;
+    sm_element *p, *pnext;
     sm_col *pcol;
 
     solution_add(sol, weight, col);

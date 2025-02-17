@@ -56,8 +56,8 @@ void find_equiv_outputs(pPLA PLA) {
 }
 
 int check_equiv(pset_family f1, pset_family f2) {
-    register pcube *f1list, *f2list;
-    register pcube p, last;
+    pcube *f1list, *f2list;
+    pcube p, last;
 
     f1list = cube1list(f1);
     foreach_set(f2, last, p) {

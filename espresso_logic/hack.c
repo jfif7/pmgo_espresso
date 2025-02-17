@@ -180,7 +180,7 @@ void map_output_symbolic(pPLA PLA) {
 void find_inputs(pset_family A, pPLA PLA, symbolic_list_t *list, int base,
                  int value, pset_family *newF, pset_family *newD) {
     pcover S, S1;
-    register pset last, p;
+    pset last, p;
 
     /*
      *  A represents th 'input' values for which the outputs assume
@@ -233,8 +233,8 @@ pcover *newF, *newD;
 {
     pcover A, S, S1;
     symbolic_list_t *p2;
-    register pset p, last;
-    register int i;
+    pset p, last;
+    int i;
 
     /* painfully find the points for which the symbolic output is dc */
     A = NIL(set_family_t);

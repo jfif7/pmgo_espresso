@@ -54,7 +54,7 @@ typedef struct {
 /* util_signature.c */ extern int time_usage(char *name);
 /* util_signature.c */ extern void s_totals(long time, int i);
 /* util_signature.c */ extern void s_runtime(long total);
-/* sigma.c */ extern pset get_sigma(pset_family R, register pset c);
+/* sigma.c */ extern pset get_sigma(pset_family R, pset c);
 /* sigma.c */ extern void set_not(pset c);
 /* signature.c */ extern void cleanup(void);
 /* signature.c */ extern pset_family signature(pset_family F1, pset_family D1,

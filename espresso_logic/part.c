@@ -1,7 +1,7 @@
 #include "mincov_int.h"
 
-static void copy_row(register sm_matrix *A, register sm_row *prow) {
-    register sm_element *p;
+static void copy_row(sm_matrix *A, sm_row *prow) {
+    sm_element *p;
 
     for (p = prow->first_col; p != 0; p = p->next_col) {
         (void)sm_insert(A, p->row_num, p->col_num);
@@ -59,8 +59,8 @@ static int visit_row(sm_matrix *A, sm_row *prow, int *rows_visited,
 
 int sm_block_partition(sm_matrix *A, sm_matrix **L, sm_matrix **R) {
     int cols_visited, rows_visited;
-    register sm_row *prow;
-    register sm_col *pcol;
+    sm_row *prow;
+    sm_col *pcol;
 
     /* Avoid the trivial case */
     if (A->nrows == 0) {

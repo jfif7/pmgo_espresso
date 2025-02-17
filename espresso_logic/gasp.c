@@ -92,8 +92,8 @@ void expand1_gasp(pset_family F, pset_family D, pset_family R,
 /* which index of F (or Freduced) to be checked */
 
 {
-    register int c2index;
-    register pcube p, last, c2under;
+    int c2index;
+    pcube p, last, c2under;
     pcube RAISE, FREESET, temp, *FD, c2essential;
     pcover F1;
 

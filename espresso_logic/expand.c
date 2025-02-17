@@ -42,7 +42,7 @@ pcover expand(pset_family F, pset_family R, int nonsparse)
 
 /* expand non-sparse variables only */
 {
-    register pcube last, p;
+    pcube last, p;
     pcube RAISE, FREESET, INIT_LOWER, SUPER_CUBE, OVEREXPANDED_CUBE;
     int var, num_covered;
     bool change;
@@ -193,7 +193,7 @@ void expand1(pset_family BB, pset_family CC, pset RAISE, pset FREESET,
 */
 
 void essen_parts(pset_family BB, pset_family CC, pset RAISE, pset FREESET) {
-    register pcube p, r = RAISE;
+    pcube p, r = RAISE;
     pcube lastp, xlower = cube.temp[0];
     int dist;
 
@@ -204,8 +204,8 @@ void essen_parts(pset_family BB, pset_family CC, pset RAISE, pset FREESET) {
         if ((dist = cdist01(p, r)) > 1) goto exit_if;
 #else
         {
-            register int w, last;
-            register unsigned int x;
+            int w, last;
+            unsigned int x;
             dist = 0;
             if ((last = cube.inword) != -1) {
                 x = p[last] & r[last];
@@ -220,8 +220,8 @@ void essen_parts(pset_family BB, pset_family CC, pset RAISE, pset FREESET) {
             }
         }
         {
-            register int w, var, last;
-            register pcube mask;
+            int w, var, last;
+            pcube mask;
             for (var = cube.num_binary_vars; var < cube.num_vars; var++) {
                 mask = cube.var_mask[var];
                 last = cube.last_word[var];
@@ -259,8 +259,8 @@ void essen_parts(pset_family BB, pset_family CC, pset RAISE, pset FREESET) {
     this part can always be raised.
 */
 
-void essen_raising(register pset_family BB, pset RAISE, pset FREESET) {
-    register pcube last, p, xraise = cube.temp[0];
+void essen_raising(pset_family BB, pset RAISE, pset FREESET) {
+    pcube last, p, xraise = cube.temp[0];
 
     /* Form union of all cubes of BB, and then take complement wrt FREESET */
     (void)set_copy(xraise, cube.emptyset);
@@ -285,7 +285,7 @@ void essen_raising(register pset_family BB, pset RAISE, pset FREESET) {
 */
 
 void elim_lowering(pset_family BB, pset_family CC, pset RAISE, pset FREESET) {
-    register pcube p, r = set_or(cube.temp[0], RAISE, FREESET);
+    pcube p, r = set_or(cube.temp[0], RAISE, FREESET);
     pcube last;
 
     /*
@@ -296,8 +296,8 @@ void elim_lowering(pset_family BB, pset_family CC, pset RAISE, pset FREESET) {
         if (!cdist0(p, r))
 #else
         {
-            register int w, lastw;
-            register unsigned int x;
+            int w, lastw;
+            unsigned int x;
             if ((lastw = cube.inword) != -1) {
                 x = p[lastw] & r[lastw];
                 if (~(x | x >> 1) & cube.inmask) goto false;
@@ -308,8 +308,8 @@ void elim_lowering(pset_family BB, pset_family CC, pset RAISE, pset FREESET) {
             }
         }
         {
-            register int w, var, lastw;
-            register pcube mask;
+            int w, var, lastw;
+            pcube mask;
             for (var = cube.num_binary_vars; var < cube.num_vars; var++) {
                 mask = cube.var_mask[var];
                 lastw = cube.last_word[var];
@@ -351,8 +351,8 @@ void elim_lowering(pset_family BB, pset_family CC, pset RAISE, pset FREESET) {
     raise the part which will cover the same part in the most cubes of CC.
 */
 int most_frequent(pset_family CC, pset FREESET) {
-    register int i, best_part, best_count, *count;
-    register pset p, last;
+    int i, best_part, best_count, *count;
+    pset p, last;
 
     /* Count occurences of each variable */
     count = ALLOC(int, cube.size);
@@ -382,8 +382,8 @@ int most_frequent(pset_family CC, pset FREESET) {
     (i.e., nonprime cubes, and cubes not already covered)
 */
 
-void setup_BB_CC(register pset_family BB, register pset_family CC) {
-    register pcube p, last;
+void setup_BB_CC(pset_family BB, pset_family CC) {
+    pcube p, last;
 
     /* Create the block and cover set families */
     BB->active_count = BB->count;
@@ -409,8 +409,8 @@ void setup_BB_CC(register pset_family BB, register pset_family CC) {
 
 void select_feasible(pset_family BB, pset_family CC, pset RAISE, pset FREESET,
                      pset SUPER_CUBE, int *num_covered) {
-    register pcube p, last, bestfeas = NULL, *feas;
-    register int i, j;
+    pcube p, last, bestfeas = NULL, *feas;
+    int i, j;
     pcube *feas_new_lower;
     int bestcount, bestsize, count, size, numfeas, lastfeas;
     pcover new_lower;
@@ -515,7 +515,7 @@ loop:
 */
 
 bool feasibly_covered(pset_family BB, pset c, pset RAISE, pset new_lower) {
-    register pcube p, r = set_or(cube.temp[0], RAISE, c);
+    pcube p, r = set_or(cube.temp[0], RAISE, c);
     int dist;
     pcube lastp;
 
@@ -525,8 +525,8 @@ bool feasibly_covered(pset_family BB, pset c, pset RAISE, pset new_lower) {
         if ((dist = cdist01(p, r)) > 1) goto exit_if;
 #else
         {
-            register int w, last;
-            register unsigned int x;
+            int w, last;
+            unsigned int x;
             dist = 0;
             if ((last = cube.inword) != -1) {
                 x = p[last] & r[last];
@@ -541,8 +541,8 @@ bool feasibly_covered(pset_family BB, pset c, pset RAISE, pset new_lower) {
             }
         }
         {
-            register int w, var, last;
-            register pcube mask;
+            int w, var, last;
+            pcube mask;
             for (var = cube.num_binary_vars; var < cube.num_vars; var++) {
                 mask = cube.var_mask[var];
                 last = cube.last_word[var];
@@ -574,7 +574,7 @@ bool feasibly_covered(pset_family BB, pset c, pset RAISE, pset new_lower) {
 void mincov(pset_family BB, pset RAISE, pset FREESET) {
     int expansion, nset, var, dist;
     pset_family B;
-    register pcube xraise = cube.temp[0], xlower, p, last, plower;
+    pcube xraise = cube.temp[0], xlower, p, last, plower;
 
 #ifdef RANDOM_MINCOV
     dist = random() % set_ord(FREESET);
@@ -638,9 +638,8 @@ heuristic_mincov:
     find_all_primes -- find all of the primes which cover the
     currently reduced BB
 */
-pcover find_all_primes(pset_family BB, register pset RAISE,
-                       register pset FREESET) {
-    register pset last, p, plower;
+pcover find_all_primes(pset_family BB, pset RAISE, pset FREESET) {
+    pset last, p, plower;
     pset_family B, B1;
 
     if (BB->active_count == 0) {
@@ -672,7 +671,7 @@ pcover find_all_primes(pset_family BB, register pset RAISE,
 */
 
 pcover all_primes(pset_family F, pset_family R) {
-    register pcube last, p, RAISE, FREESET;
+    pcube last, p, RAISE, FREESET;
     pcover Fall_primes, B1;
 
     FREESET = new_cube();

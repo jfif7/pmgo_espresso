@@ -8,11 +8,11 @@
 
 #include "espresso.h"
 
-static void cb_unravel(register pset c, int start, int end, pset startbase,
+static void cb_unravel(pset c, int start, int end, pset startbase,
                        pset_family B1) {
     pcube base = cube.temp[0], p, last;
     int expansion, place, skip, var, size, offset;
-    register int i, j, k, n;
+    int i, j, k, n;
 
     /* Determine how many cubes it will blow up into, and create a mask
         for those parts that have only a single coordinate
@@ -59,7 +59,7 @@ static void cb_unravel(register pset c, int start, int end, pset startbase,
 pcover unravel_range(pset_family B, int start, int end) {
     pcover B1;
     int var, total_size, expansion, size;
-    register pcube p, last, startbase = cube.temp[1];
+    pcube p, last, startbase = cube.temp[1];
 
     /* Create the starting base for those variables not being unravelled */
     (void)set_copy(startbase, cube.emptyset);
@@ -108,8 +108,8 @@ pcover size_sort(pset_family T) {
 
 /*  mini_sort -- sort cubes according to the heuristics of mini */
 pcover mini_sort(pset_family F, qsort_compare_func compare) {
-    register int *count, cnt, n = cube.size, i;
-    register pcube p, last;
+    int *count, cnt, n = cube.size, i;
+    pcube p, last;
     pcover F_sorted;
     pcube *F1;
 
@@ -136,8 +136,8 @@ pcover mini_sort(pset_family F, qsort_compare_func compare) {
 
 /* sort_reduce -- Espresso strategy for ordering the cubes before reduction */
 pcover sort_reduce(pset_family T) {
-    register pcube p, last, largest = NULL;
-    register int bestsize = -1, size, n = cube.num_vars;
+    pcube p, last, largest = NULL;
+    int bestsize = -1, size, n = cube.num_vars;
     pcover T_sorted;
     pcube *T1;
 
@@ -158,9 +158,9 @@ pcover sort_reduce(pset_family T) {
     return T_sorted;
 }
 
-pcover random_order(register pset_family F) {
+pcover random_order(pset_family F) {
     pset temp;
-    register int i, k;
+    int i, k;
 #ifdef RANDOM
     long random();
 #endif
@@ -196,7 +196,7 @@ int cubelist_partition(pset *T, pset **A, pset **B, unsigned int comp_debug)
 /* cubelist of partition and remainder */
 
 {
-    register pcube *T1, p, seed, cof;
+    pcube *T1, p, seed, cof;
     pcube *A1, *B1;
     bool change;
     int count, numcube;
@@ -268,9 +268,9 @@ int cubelist_partition(pset *T, pset **A, pset **B, unsigned int comp_debug)
 /*
  *  quick cofactor against a single output function
  */
-pcover cof_output(pset_family T, register int i) {
+pcover cof_output(pset_family T, int i) {
     pcover T1;
-    register pcube p, last, pdest, mask;
+    pcube p, last, pdest, mask;
 
     mask = cube.var_mask[cube.output];
     T1 = new_cover(T->count);
@@ -288,7 +288,7 @@ pcover cof_output(pset_family T, register int i) {
  *  quick intersection against a single output function
  */
 pcover uncof_output(pset_family T, int i) {
-    register pcube p, last, mask;
+    pcube p, last, mask;
 
     if (T == NULL) {
         return T;

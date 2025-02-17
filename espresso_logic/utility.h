@@ -17,7 +17,9 @@
         (void)free((char *)(obj)); \
         (obj) = 0;                 \
     }
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 extern long util_cpu_time(void);
 extern char *util_print_time(long t);
 
@@ -35,4 +37,7 @@ extern char *util_print_time(long t);
 #define ABS(a) ((a) > 0 ? (a) : -(a))
 #endif /* ABS */
 
+#endif
+#ifdef __cplusplus
+}
 #endif

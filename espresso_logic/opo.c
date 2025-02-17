@@ -245,10 +245,10 @@ pset_family opo_recur(pset_family T, pset_family D, pset select, int offset,
     return temp;
 }
 
-pset_family opo_leaf(register pset_family T, pset select, int out1, int out2) {
-    register pset_family temp;
-    register pset p, pdest;
-    register int i;
+pset_family opo_leaf(pset_family T, pset select, int out1, int out2) {
+    pset_family temp;
+    pset p, pdest;
+    int i;
 
     out1 += cube.first_part[cube.output];
     out2 += cube.first_part[cube.output];
@@ -283,8 +283,8 @@ pcover F, D;
 pset select;
 int f, fbar;		/* indices of f and fbar in the output part */
 {
-    register int i;
-    register pcube p;
+    int i;
+    pcube p;
     pset_family f_table, fbar_table;
 
     /* setup required for fcube_is_covered */
@@ -308,10 +308,10 @@ int f, fbar;		/* indices of f and fbar in the output part */
 
 pset_family find_covers(F, D, select, n)
 pcover F, D;
-register pset select;
+pset select;
 int n;
 {
-    register pset p, last, new;
+    pset p, last, new;
     pcover F1;
     pcube *Flist;
     pset_family f_table, table;
@@ -385,8 +385,8 @@ void output_phase_setup(pPLA PLA, int first_output) {
     pcube mask, mask1, last;
     int first_part, offset;
     bool save;
-    register pcube p, pr, pf;
-    register int i, last_part;
+    pcube p, pr, pf;
+    int i, last_part;
 
     if (cube.output == -1) fatal("output_phase_setup: must have an output");
 
@@ -463,9 +463,8 @@ void output_phase_setup(pPLA PLA, int first_output) {
  */
 pPLA set_phase(pPLA PLA) {
     pcover F1, R1;
-    register pcube last, p, outmask;
-    register pcube temp = cube.temp[0], phase = PLA->phase,
-                   phase1 = cube.temp[1];
+    pcube last, p, outmask;
+    pcube temp = cube.temp[0], phase = PLA->phase, phase1 = cube.temp[1];
 
     outmask = cube.var_mask[cube.num_vars - 1];
     set_diff(phase1, outmask, phase);

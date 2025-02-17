@@ -23,11 +23,10 @@
 #define NO_LIFTING 3
 
 static bool compl_special_cases(pset *T, pset_family *Tbar);
-static pcover compl_merge(pset *T1, pset_family L, pset_family R,
-                          register pset cl, register pset cr, int var,
-                          int lifting);
-static void compl_d1merge(register pset *L1, register pset *R1);
-static pcover compl_cube(register pset p);
+static pcover compl_merge(pset *T1, pset_family L, pset_family R, pset cl,
+                          pset cr, int var, int lifting);
+static void compl_d1merge(pset *L1, pset *R1);
+static pcover compl_cube(pset p);
 static void compl_lift(pset *A1, pset *B1, pset bcube, int var);
 static void compl_lift_onset(pset *A1, pset_family T, pset bcube, int var);
 static void compl_lift_onset_complex(pset *A1, pset_family T, int var);
@@ -39,8 +38,8 @@ static bool simplify_special_cases(pset *T, pset_family *Tnew);
 pcover complement(pset *T)
 /* T will be disposed of */
 {
-    register pcube cl, cr;
-    register int best;
+    pcube cl, cr;
+    int best;
     pcover Tbar, Tl, Tr;
     int lifting;
     static int compl_level = 0;
@@ -77,7 +76,7 @@ static bool compl_special_cases(pset *T, pset_family *Tbar)
 /* will be disposed if answer is determined */
 /* returned only if answer determined */
 {
-    register pcube *T1, p, ceil, cof = T[0];
+    pcube *T1, p, ceil, cof = T[0];
     pcover A, ceil_compl;
 
     /* Check for no cubes in the cover */
@@ -156,16 +155,15 @@ static bool compl_special_cases(pset *T, pset_family *Tbar)
  *  expansion is not full containment, but single-cube containment).
  */
 
-static pcover compl_merge(pset *T1, pset_family L, pset_family R,
-                          register pset cl, register pset cr, int var,
-                          int lifting)
+static pcover compl_merge(pset *T1, pset_family L, pset_family R, pset cl,
+                          pset cr, int var, int lifting)
 /* Original ON-set */
 /* Complement from each recursion branch */
 /* cubes used for cofactoring */
 /* splitting variable */
 /* whether to perform lifting or not */
 {
-    register pcube p, last, pt;
+    pcube p, last, pt;
     pcover T, Tbar;
     pcube *L1, *R1;
 
@@ -252,7 +250,7 @@ static pcover compl_merge(pset *T1, pset_family L, pset_family R,
  *  splitting variable.
  */
 static void compl_lift(pset *A1, pset *B1, pset bcube, int var) {
-    register pcube a, b, *B2, lift = cube.temp[4], liftor = cube.temp[5];
+    pcube a, b, *B2, lift = cube.temp[4], liftor = cube.temp[5];
     pcube mask = cube.var_mask[var];
 
     (void)set_and(liftor, bcube, mask);
@@ -283,7 +281,7 @@ static void compl_lift(pset *A1, pset *B1, pset bcube, int var) {
  *  against the original on-set T.
  */
 static void compl_lift_onset(pset *A1, pset_family T, pset bcube, int var) {
-    register pcube a, last, p, lift = cube.temp[4], mask = cube.var_mask[var];
+    pcube a, last, p, lift = cube.temp[4], mask = cube.var_mask[var];
 
     /* for each active cube from one branch of the complement */
     for (; (a = *A1++) != NULL;) {
@@ -316,8 +314,8 @@ static void compl_lift_onset_complex(pset *A1, pset_family T, int var)
 /* original ON-set */
 /* which variable we split on */
 {
-    register int dist;
-    register pcube last, p, a, xlower;
+    int dist;
+    pcube last, p, a, xlower;
 
     /* for each cube in the complement */
     xlower = new_cube();
@@ -345,8 +343,8 @@ static void compl_lift_onset_complex(pset *A1, pset_family T, int var)
 /*
  *  compl_d1merge -- distance-1 merge in the splitting variable
  */
-static void compl_d1merge(register pset *L1, register pset *R1) {
-    register pcube pl, pr;
+static void compl_d1merge(pset *L1, pset *R1) {
+    pcube pl, pr;
 
     /* Find equal cubes between the two cofactors */
     for (pl = *L1, pr = *R1; (pl != NULL) && (pr != NULL);)
@@ -365,8 +363,8 @@ static void compl_d1merge(register pset *L1, register pset *R1) {
 }
 
 /* compl_cube -- return the complement of a single cube (De Morgan's law) */
-static pcover compl_cube(register pset p) {
-    register pcube diff = cube.temp[7], pdest, mask, full = cube.fullset;
+static pcover compl_cube(pset p) {
+    pcube diff = cube.temp[7], pdest, mask, full = cube.fullset;
     int var;
     pcover R;
 
@@ -392,8 +390,8 @@ void simp_comp(pset *T, pset_family *Tnew, pset_family *Tbar)
 /* T will be disposed of */
 
 {
-    register pcube cl, cr;
-    register int best;
+    pcube cl, cr;
+    int best;
     pcover Tl, Tr, Tlbar, Trbar;
     int lifting;
     static int simplify_level = 0;
@@ -440,7 +438,7 @@ static bool simp_comp_special_cases(pset *T, pset_family *Tnew,
 /* returned only if answer determined */
 /* returned only if answer determined */
 {
-    register pcube *T1, p, ceil, cof = T[0];
+    pcube *T1, p, ceil, cof = T[0];
     pcube last;
     pcover A;
 
@@ -528,8 +526,8 @@ static bool simp_comp_special_cases(pset *T, pset_family *Tnew,
 pcover simplify(pset *T)
 /* T will be disposed of */
 {
-    register pcube cl, cr;
-    register int best;
+    pcube cl, cr;
+    int best;
     pcover Tbar, Tl, Tr;
     int lifting;
     static int simplify_level = 0;
@@ -573,7 +571,7 @@ static bool simplify_special_cases(pset *T, pset_family *Tnew)
 /* will be disposed if answer is determined */
 /* returned only if answer determined */
 {
-    register pcube *T1, p, ceil, cof = T[0];
+    pcube *T1, p, ceil, cof = T[0];
     pcube last;
     pcover A;
 

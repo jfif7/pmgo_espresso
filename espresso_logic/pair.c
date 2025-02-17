@@ -103,8 +103,8 @@ void set_pair1(pPLA PLA, int adjust_labels) {
 }
 
 pcover pairvar(pset_family A, ppair pair) {
-    register pcube last, p;
-    register int val, p1, p2, b1, b0;
+    pcube last, p;
+    int val, p1, p2, b1, b0;
     int insert_col, pairnum;
 
     insert_col = cube.first_part[cube.num_vars - 1];
@@ -388,8 +388,8 @@ ppair pair_best_cost(int **cost_array_local) {
     return best_pair;
 }
 
-void find_best_cost(register ppair pair) {
-    register int i, cost;
+void find_best_cost(ppair pair) {
+    int i, cost;
 
     cost = 0;
     for (i = 0; i < pair->cnt; i++)
@@ -575,8 +575,8 @@ void generate_all_pairs(ppair pair, int n, pset candidate,
     set_free(recur_candidate);
 }
 
-ppair pair_new(register int n) {
-    register ppair pair1;
+ppair pair_new(int n) {
+    ppair pair1;
 
     pair1 = ALLOC(pair_t, 1);
     pair1->cnt = 0;
@@ -585,9 +585,9 @@ ppair pair_new(register int n) {
     return pair1;
 }
 
-ppair pair_save(register ppair pair, register int n) {
-    register int k;
-    register ppair pair1;
+ppair pair_save(ppair pair, int n) {
+    int k;
+    ppair pair1;
 
     pair1 = pair_new(n);
     pair1->cnt = pair->cnt;
@@ -598,7 +598,7 @@ ppair pair_save(register ppair pair, register int n) {
     return pair1;
 }
 
-void pair_free(register ppair pair) {
+void pair_free(ppair pair) {
     FREE(pair->var1);
     FREE(pair->var2);
     FREE(pair);

@@ -44,7 +44,7 @@ static bool toggle = TRUE;
 */
 
 pcover reduce(pset_family F, pset_family D) {
-    register pcube last, p, cunder, *FD;
+    pcube last, p, cunder, *FD;
 
     /* Order the cubes */
     if (use_random_order)
@@ -94,8 +94,8 @@ pcube sccc(pset *T)
 /* T will be disposed of */
 {
     pcube r;
-    register pcube cl, cr;
-    register int best;
+    pcube cl, cr;
+    int best;
     static int sccc_level = 0;
 
     if (debug & REDUCE1) {
@@ -116,8 +116,7 @@ pcube sccc(pset *T)
     return r;
 }
 
-pcube sccc_merge(register pset left, register pset right, register pset cl,
-                 register pset cr)
+pcube sccc_merge(pset left, pset right, pset cl, pset cr)
 /* will be disposed of ... */
 /* will be disposed of ... */
 {
@@ -143,8 +142,8 @@ pcube sccc_merge(register pset left, register pset right, register pset cl,
 
     This is "anded" with the incoming cube result.
 */
-pcube sccc_cube(register pset result, register pset p) {
-    register pcube temp = cube.temp[0], mask;
+pcube sccc_cube(pset result, pset p) {
+    pcube temp = cube.temp[0], mask;
     int var;
 
     if ((var = cactive(p)) >= 0) {
@@ -163,7 +162,7 @@ bool sccc_special_cases(pset *T, pset *result)
 /* will be disposed if answer is determined */
 /* returned only if answer determined */
 {
-    register pcube *T1, p, temp = cube.temp[1], ceil, cof = T[0];
+    pcube *T1, p, temp = cube.temp[1], ceil, cof = T[0];
     pcube *A, *B;
 
     /* empty cover => complement is universe => SCCC is universe */

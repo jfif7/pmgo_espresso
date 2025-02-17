@@ -244,9 +244,9 @@ solution_t *sm_mincov(sm_matrix *A, solution_t *select, int *weight, int lb,
 }
 
 static int select_column(sm_matrix *A, int *weight, solution_t *indep) {
-    register sm_col *pcol;
-    register sm_row *prow, *indep_cols;
-    register sm_element *p, *p1;
+    sm_col *pcol;
+    sm_row *prow, *indep_cols;
+    sm_element *p, *p1;
     double w, best;
     int best_col;
 
@@ -300,8 +300,8 @@ static void select_essential(sm_matrix *A, solution_t *select, int *weight,
 
 /* must beat this solution */
 {
-    register sm_element *p;
-    register sm_row *prow, *essen;
+    sm_element *p;
+    sm_row *prow, *essen;
     int delcols, delrows, essen_count;
 
     do {
