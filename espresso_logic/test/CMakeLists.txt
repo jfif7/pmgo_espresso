@@ -17,14 +17,24 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
+file(GLOB SRC_FILES "${PROJECT_SOURCE_DIR}/../*.c")
+add_library(ESPRESSO STATIC ${SRC_FILES})
+
 add_executable(
-    cvrin_steam_test
-    cvrin_steam_test.cpp
+    cvrin_stream_test
+    cvrin_stream_test.cpp
 )
+
 target_link_libraries(
-    cvrin_steam_test
+    cvrin_stream_test PUBLIC
     GTest::gtest_main
+    ESPRESSO
+)
+
+target_include_directories(
+    cvrin_stream_test PUBLIC
+    ${PROJECT_SOURCE_DIR}/..
 )
 
 include(GoogleTest)
-gtest_discover_tests(cvrin_steam_test)
+gtest_discover_tests(cvrin_stream_test)

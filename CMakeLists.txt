@@ -10,10 +10,12 @@ ExternalProject_Add(espresso
   CMAKE_CACHE_ARGS
     -DCMAKE_TOOLCHAIN_FILE:FILEPATH=$ENV{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake
   INSTALL_COMMAND ""
+  BUILD_ALWAYS TRUE
   )
 
 ExternalProject_Add(espresso_test
   SOURCE_DIR ${CMAKE_SOURCE_DIR}/espresso_logic/test
   BINARY_DIR ${CMAKE_BINARY_DIR}/test
   INSTALL_COMMAND ""
+  BUILD_ALWAYS TRUE
   )
