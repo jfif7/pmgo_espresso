@@ -21,6 +21,15 @@ char *run_espresso(const char *input_char) {
     char *solution = espresso_bridge(is);
     return solution;
 }
+#if __EMSCRIPTEN__
+EMSCRIPTEN_KEEPALIVE
+#endif
+char *allocate_cpp(int size) { return (char *)malloc(size); }
+
+#if __EMSCRIPTEN__
+EMSCRIPTEN_KEEPALIVE
+#endif
+void free_cpp(char *ptr) { free(ptr); }
 }
 
 char *espresso_bridge(std::istream &is) {

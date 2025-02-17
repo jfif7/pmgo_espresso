@@ -52,7 +52,7 @@ list(FILTER SOURCES EXCLUDE REGEX ".*/main\\.c$")
 
 add_executable(wasm_bridge ${SOURCES})
 set_target_properties(wasm_bridge PROPERTIES LINK_FLAGS
-    "-s EXPORTED_FUNCTIONS=['_run_espresso'] -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']")
+    "-s EXPORTED_FUNCTIONS=['_run_espresso','_allocate_cpp','_free_cpp'] -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap','stringToUTF8','UTF8ToString']")
 
 
 # target_link_libraries(wasm_bridge PRIVATE espresso_lib)
