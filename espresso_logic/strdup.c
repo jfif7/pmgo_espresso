@@ -12,7 +12,7 @@ char *strdup(const char *src) {
 
     if (len == 0) return NULL;
 
-    dup = malloc(len + 1);
+    dup = (char *)malloc(len + 1);
 
     if (dup) strcpy(dup, src);
 

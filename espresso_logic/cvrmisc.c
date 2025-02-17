@@ -95,7 +95,7 @@ void totals(long int time, int i, pset_family T, pcost cost) {
 }
 
 /* fatal -- report fatal error message and take a dive */
-void fatal(char *s) {
+void fatal(const char *s) {
     fprintf(stderr, "espresso: %s\n", s);
     exit(1);
 }

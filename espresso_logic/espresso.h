@@ -1,7 +1,12 @@
 /*
  *  espresso.h -- header file for Espresso-mv
  */
+#ifndef ESPRESSO_H
+#define ESPRESSO_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 #include "port.h"
 #include "utility.h"
 #include "sparse.h"
@@ -350,7 +355,7 @@ typedef struct {
     symbolic_t *symbolic_output; /* allow symbolic output mapping */
 } PLA_t, *pPLA;
 
-#define equal(a, b) (strcmp(a, b) == 0)
+#define str_equal(a, b) (strcmp(a, b) == 0)
 
 /* This is a hack which I wish I hadn't done, but too painful to change */
 #define CUBELISTSIZE(T) (((pcube *)T[1] - T) - 3)
@@ -559,9 +564,6 @@ extern struct cdata_struct cdata, temp_cdata_save;
 
 /* function declarations */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 /* cofactor.c */ extern int binate_split_select(pset *T, pset cleft,
                                                 pset cright, int debug_flag);
 /* cofactor.c */ extern pset_family cubeunlist(pset *A1);
@@ -643,7 +645,7 @@ extern "C" {
 /* cvrmisc.c */ extern char *print_cost(pset_family F);
 /* cvrmisc.c */ extern void copy_cost(pcost s, pcost d);
 /* cvrmisc.c */ extern void cover_cost(pset_family F, pcost cost);
-/* cvrmisc.c */ extern void fatal(char *s);
+/* cvrmisc.c */ extern void fatal(const char *s);
 /* cvrmisc.c */ extern void print_trace(pset_family T, const char *name,
                                         long time);
 /* cvrmisc.c */ extern void size_stamp(pset_family T, char *name);
@@ -884,4 +886,5 @@ extern "C" {
 
 #ifdef __cplusplus
 }
+#endif
 #endif

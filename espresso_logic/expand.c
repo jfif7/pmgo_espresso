@@ -300,10 +300,10 @@ void elim_lowering(pset_family BB, pset_family CC, pset RAISE, pset FREESET) {
             unsigned int x;
             if ((lastw = cube.inword) != -1) {
                 x = p[lastw] & r[lastw];
-                if (~(x | x >> 1) & cube.inmask) goto false;
+                if (~(x | x >> 1) & cube.inmask) goto lable_false;
                 for (w = 1; w < lastw; w++) {
                     x = p[w] & r[w];
-                    if (~(x | x >> 1) & DISJOINT) goto false;
+                    if (~(x | x >> 1) & DISJOINT) goto lable_false;
                 }
             }
         }
@@ -315,12 +315,12 @@ void elim_lowering(pset_family BB, pset_family CC, pset RAISE, pset FREESET) {
                 lastw = cube.last_word[var];
                 for (w = cube.first_word[var]; w <= lastw; w++)
                     if (p[w] & r[w] & mask[w]) goto nextvar;
-                goto false;
+                goto lable_false;
             nextvar:;
             }
         }
         continue;
-        false:
+    lable_false:
 #endif
             BB->active_count--, RESET(p, ACTIVE);
     }
@@ -333,9 +333,9 @@ void elim_lowering(pset_family BB, pset_family CC, pset RAISE, pset FREESET) {
 #ifdef NO_INLINE
             if (!setp_implies(p, r))
 #else
-            INLINEsetp_implies(p, r, /* when false => */ goto false1);
+            INLINEsetp_implies(p, r, /* when false => */ goto lable_false1);
             /* when true => go to end of loop */ continue;
-        false1:
+        lable_false1:
 #endif
                 CC->active_count--, RESET(p, ACTIVE);
         }

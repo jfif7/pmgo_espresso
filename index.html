@@ -7,13 +7,23 @@
   </head>
   <body>
     <h2>Enter Input:</h2>
-    <textarea id="inputText" rows="4" cols="50"></textarea><br />
+    <textarea id="inputText" rows="4" cols="50">
+.i 2
+.o 2
+.p 4
+00 10
+01 01
+11 -1
+10 1-
+.e
+</textarea
+    ><br />
     <button onclick="runCProgram()">Submit</button>
     <button onclick="doubleString()">Double</button>
     <h3>Output:</h3>
     <pre id="outputText"></pre>
 
-    <script src="espresso_bin/espresso.js"></script>
+    <script src="espresso_bin/wasm_bridge.js"></script>
     <script>
       let run_espresso
 

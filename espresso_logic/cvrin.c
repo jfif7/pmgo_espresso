@@ -79,14 +79,14 @@ void read_cube(FILE *fp, pPLA PLA) {
         if (cube.part_size[var] < 0) {
             if (fscanf(fp, "%s", token) != 1) goto bad_char;
 
-            if (equal(token, "-") || equal(token, "ANY")) {
+            if (str_equal(token, "-") || str_equal(token, "ANY")) {
                 if (kiss && var == cube.num_vars - 2) {
                     /* leave it empty */
                 } else {
                     /* make it full */
                     set_or(cf, cf, cube.var_mask[var]);
                 }
-            } else if (equal(token, "~")) {
+            } else if (str_equal(token, "~")) {
                 ;
                 /* leave it empty ... (?) */
             } else {
@@ -104,7 +104,7 @@ void read_cube(FILE *fp, pPLA PLA) {
                         PLA->label[i] = strdup(token); /* add new label */
                         set_insert(cf, i + offset);
                         break;
-                    } else if (equal(PLA->label[i], token)) {
+                    } else if (str_equal(PLA->label[i], token)) {
                         set_insert(cf, i + offset); /* use column i */
                         break;
                     }
@@ -230,7 +230,7 @@ loop:
             break;
         case '.':
             /* .i gives the cube input size (binary-functions only) */
-            if (equal(get_word(fp, word), "i")) {
+            if (str_equal(get_word(fp, word), "i")) {
                 if (cube.fullset != NULL) {
                     fprintf(stderr, "extra .i ignored\n");
                     skip_line(fp, stdout, /* echo */ FALSE);
@@ -242,7 +242,7 @@ loop:
                     cube.part_size = ALLOC(int, cube.num_vars);
                 }
                 /* .o gives the cube output size (binary-functions only) */
-            } else if (equal(word, "o")) {
+            } else if (str_equal(word, "o")) {
                 if (cube.fullset != NULL) {
                     fprintf(stderr, "extra .o ignored\n");
                     skip_line(fp, stdout, /* echo */ FALSE);
@@ -258,7 +258,7 @@ loop:
                     PLA_labels(PLA);
                 }
                 /* .mv gives the cube size for a multiple-valued function */
-            } else if (equal(word, "mv")) {
+            } else if (str_equal(word, "mv")) {
                 if (cube.fullset != NULL) {
                     fprintf(stderr, "extra .mv ignored\n");
                     skip_line(fp, stdout, /* echo */ FALSE);
@@ -289,20 +289,20 @@ loop:
                     PLA_labels(PLA);
                 }
                 /* .p gives the number of product terms -- we ignore it */
-            } else if (equal(word, "p"))
+            } else if (str_equal(word, "p"))
                 (void)fscanf(fp, "%d", &np);
             /* .e and .end specify the end of the file */
-            else if (equal(word, "e") || equal(word, "end"))
+            else if (str_equal(word, "e") || str_equal(word, "end"))
                 return;
             /* .kiss turns on the kiss-hack option */
-            else if (equal(word, "kiss"))
+            else if (str_equal(word, "kiss"))
                 kiss = TRUE;
             /* .type specifies a logical type for the PLA */
-            else if (equal(word, "type")) {
+            else if (str_equal(word, "type")) {
                 (void)get_word(fp, word);
 
                 for (i = 0; pla_types[i].key != 0; i++)
-                    if (equal(pla_types[i].key + 1, word)) {
+                    if (str_equal(pla_types[i].key + 1, word)) {
                         PLA->pla_type = pla_types[i].value;
                         break;
                     }
@@ -310,7 +310,7 @@ loop:
                 if (pla_types[i].key == 0)
                     fatal("unknown type in .type command");
                 /* parse the labels */
-            } else if (equal(word, "ilb")) {
+            } else if (str_equal(word, "ilb")) {
                 if (cube.fullset == NULL)
                     fatal("PLA size must be declared before .ilb or .ob");
 
@@ -323,7 +323,7 @@ loop:
                     PLA->label[i] = ALLOC(char, strlen(word) + 6);
                     (void)sprintf(PLA->label[i], "%s.bar", word);
                 }
-            } else if (equal(word, "ob")) {
+            } else if (str_equal(word, "ob")) {
                 if (cube.fullset == NULL)
                     fatal("PLA size must be declared before .ilb or .ob");
 
@@ -335,7 +335,7 @@ loop:
                     PLA->label[i] = strdup(word);
                 }
                 /* .label assigns labels to multiple-valued variables */
-            } else if (equal(word, "label")) {
+            } else if (str_equal(word, "label")) {
                 if (cube.fullset == NULL)
                     fatal("PLA size must be declared before .label");
 
@@ -348,7 +348,7 @@ loop:
                     (void)get_word(fp, word);
                     PLA->label[i] = strdup(word);
                 }
-            } else if (equal(word, "symbolic")) {
+            } else if (str_equal(word, "symbolic")) {
                 symbolic_t *newlist, *p1;
 
                 if (read_symbolic(fp, PLA, word, &newlist)) {
@@ -362,7 +362,7 @@ loop:
                 } else {
                     fatal("error reading .symbolic");
                 }
-            } else if (equal(word, "symbolic-output")) {
+            } else if (str_equal(word, "symbolic-output")) {
                 symbolic_t *newlist, *p1;
 
                 if (read_symbolic(fp, PLA, word, &newlist)) {
@@ -377,7 +377,7 @@ loop:
                     fatal("error reading .symbolic-output");
                 }
                 /* .phase allows a choice of output phases */
-            } else if (equal(word, "phase")) {
+            } else if (str_equal(word, "phase")) {
                 if (cube.fullset == NULL)
                     fatal("PLA size must be declared before .phase");
 
@@ -398,7 +398,7 @@ loop:
                             fatal("only 0 or 1 allowed in phase description");
                 }
                 /* .pair allows for bit-pairing input variables */
-            } else if (equal(word, "pair")) {
+            } else if (str_equal(word, "pair")) {
                 int j;
 
                 if (PLA->pair != NULL) {
@@ -759,7 +759,7 @@ int read_symbolic(FILE *fp, pPLA PLA, char *word, symbolic_t **retval)
 
     for (;;) {
         (void)get_word(fp, word);
-        if (equal(word, ";")) break;
+        if (str_equal(word, ";")) break;
         if (label_index(PLA, word, &var, &i)) {
             listp = ALLOC(symbolic_list_t, 1);
             listp->variable = var;
@@ -779,7 +779,7 @@ int read_symbolic(FILE *fp, pPLA PLA, char *word, symbolic_t **retval)
 
     for (;;) {
         (void)get_word(fp, word);
-        if (equal(word, ";")) break;
+        if (str_equal(word, ";")) break;
         labelp = ALLOC(symbolic_label_t, 1);
         labelp->label = strdup(word);
         labelp->next = NIL(symbolic_label_t);
@@ -807,7 +807,7 @@ int label_index(pPLA PLA, char *word, int *varp, int *ip) {
     } else {
         for (var = 0; var < cube.num_vars; var++) {
             for (i = 0; i < cube.part_size[var]; i++) {
-                if (equal(PLA->label[cube.first_part[var] + i], word)) {
+                if (str_equal(PLA->label[cube.first_part[var] + i], word)) {
                     *varp = var;
                     *ip = i;
                     return TRUE;

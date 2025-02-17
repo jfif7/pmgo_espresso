@@ -11,7 +11,7 @@ void merge_list(void);
 static void alloc_list(int size);
 static void free_list(void);
 static void init_list(int size);
-static void delete(int element);
+static void delete_element(int element);
 static void insert(int element);
 static void print_links(int size, int *list);
 void print_bw(int size);
@@ -57,7 +57,7 @@ static void init_list(int size) {
     black_tail = -1;
 }
 
-static void delete(int element) {
+static void delete_element(int element) {
     forward_link = forward[element];
     backward_link = backward[element];
     if (forward_link != -1) {
@@ -223,7 +223,7 @@ void split_list(pset_family R, int v) {
     for (index = white_head; index != -1; index = next_index) {
         next_index = forward[index];
         if (!is_in_set(GETSET(R, index), v)) {
-            delete (index);
+            delete_element(index);
             insert(index);
         }
     }

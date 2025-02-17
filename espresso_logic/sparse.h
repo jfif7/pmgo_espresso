@@ -1,6 +1,9 @@
 #ifndef SPARSE_H
 #define SPARSE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*
  *  sparse.h -- sparse matrix package header file
  */
@@ -135,4 +138,8 @@ extern int sm_row_dominance(sm_matrix *A),
     sm_col_dominance(sm_matrix *A, int *weight),
     sm_block_partition(sm_matrix *A, sm_matrix **L, sm_matrix **R);
 
+#endif
+
+#ifdef __cplusplus
+}
 #endif

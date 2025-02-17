@@ -72,13 +72,13 @@ pcover sharp(pset a, pset b) {
 }
 
 pcover make_disjoint(pset_family A) {
-    pcover R, new;
+    pcover R, new_cover;
     pset last, p;
 
     R = new_cover(0);
     foreach_set(A, last, p) {
-        new = cb_dsharp(p, R);
-        R = sf_append(R, new);
+        new_cover = cb_dsharp(p, R);
+        R = sf_append(R, new_cover);
     }
     return R;
 }
@@ -124,7 +124,7 @@ pcover cb_dsharp(pset c, pset_family T) {
 
 /* dsharp -- form the disjoint-sharp product between two cubes */
 pcover dsharp(pset a, pset b) {
-    pcube mask, diff, and, temp, temp1 = cube.temp[0];
+    pcube mask, diff, and_cube, temp, temp1 = cube.temp[0];
     int var;
     pcover r;
 
@@ -132,7 +132,7 @@ pcover dsharp(pset a, pset b) {
 
     if (cdist0(a, b)) {
         diff = set_diff(new_cube(), a, b);
-        and = set_and(new_cube(), a, b);
+        and_cube = set_and(new_cube(), a, b);
         mask = new_cube();
         for (var = 0; var < cube.num_vars; var++) {
             /* check if position var of "a and not b" is not empty */
@@ -142,7 +142,7 @@ pcover dsharp(pset a, pset b) {
                 (void)set_and(temp, diff, cube.var_mask[var]);
 
                 /* coordinates 0 ... var-1 equal the intersection */
-                INLINEset_and(temp1, and, mask);
+                INLINEset_and(temp1, and_cube, mask);
                 INLINEset_or(temp, temp, temp1);
 
                 /* coordinates var+1 .. cube.num_vars equal a */
@@ -152,7 +152,7 @@ pcover dsharp(pset a, pset b) {
             }
         }
         free_cube(diff);
-        free_cube(and);
+        free_cube(and_cube);
         free_cube(mask);
     } else {
         r = sf_addset(r, a);

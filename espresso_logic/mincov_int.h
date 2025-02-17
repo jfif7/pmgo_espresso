@@ -3,6 +3,9 @@
 #include "sparse.h"
 #include "mincov.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 typedef struct stats_struct stats_t;
 struct stats_struct {
     int debug;           /* 1 if debugging is enabled */
@@ -42,3 +45,7 @@ extern int gimpel_reduce(sm_matrix *A, solution_t *select, int *weight, int lb,
                          solution_t **best);
 
 #define WEIGHT(weight, col) (weight == NIL(int) ? 1 : weight[col])
+
+#ifdef __cplusplus
+}
+#endif

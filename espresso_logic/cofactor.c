@@ -46,17 +46,17 @@ pcube *cofactor(pset *T, pset c) {
     for (T1 = T + 2; (p = *T1++) != NULL;) {
         if (p != c) {
 #ifdef NO_INLINE
-            if (!cdist0(p, c)) goto false;
+            if (!cdist0(p, c)) goto lable_false;
 #else
             {
                 int w, last;
                 unsigned int x;
                 if ((last = cube.inword) != -1) {
                     x = p[last] & c[last];
-                    if (~(x | x >> 1) & cube.inmask) goto false;
+                    if (~(x | x >> 1) & cube.inmask) goto lable_false;
                     for (w = 1; w < last; w++) {
                         x = p[w] & c[w];
-                        if (~(x | x >> 1) & DISJOINT) goto false;
+                        if (~(x | x >> 1) & DISJOINT) goto lable_false;
                     }
                 }
             }
@@ -68,14 +68,14 @@ pcube *cofactor(pset *T, pset c) {
                     last = cube.last_word[var];
                     for (w = cube.first_word[var]; w <= last; w++)
                         if (p[w] & c[w] & mask[w]) goto nextvar;
-                    goto false;
+                    goto lable_false;
                 nextvar:;
                 }
             }
 #endif
 
             *Tc++ = p;
-            false :;
+        lable_false:;
         }
     }
 

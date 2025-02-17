@@ -192,20 +192,20 @@ bool setp_implies(pset a, pset b) {
 
 /* sf_or -- form the "or" of all sets in a set family */
 pset sf_or(pset_family A) {
-    pset or, last, p;
+    pset or_set, last, p;
 
-    or = set_new(A->sf_size);
-    foreach_set(A, last, p) INLINEset_or(or, or, p);
-    return or ;
+    or_set = set_new(A->sf_size);
+    foreach_set(A, last, p) INLINEset_or(or_set, or_set, p);
+    return or_set;
 }
 
 /* sf_and -- form the "and" of all sets in a set family */
 pset sf_and(pset_family A) {
-    pset and, last, p;
+    pset and_set, last, p;
 
-    and = set_fill(set_new(A->sf_size), A->sf_size);
-    foreach_set(A, last, p) INLINEset_and(and, and, p);
-    return and;
+    and_set = set_fill(set_new(A->sf_size), A->sf_size);
+    foreach_set(A, last, p) INLINEset_and(and_set, and_set, p);
+    return and_set;
 }
 
 /* sf_active -- make all members of the set family active */
