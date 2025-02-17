@@ -34,6 +34,8 @@
 
       function runCProgram() {
         const input = document.getElementById("inputText").value
+        console.log(input)
+        console.log(input.length)
         let result = run_espresso(input) // Call the C function
         console.log(result)
         console.log(input.length, result.length)

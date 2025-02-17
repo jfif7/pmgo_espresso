@@ -30,7 +30,6 @@ std::string get_word(std::istream& is) {
 }
 
 void read_cube(std::istream& is, pPLA PLA) {
-    std::cerr << "read_cube" << std::endl;
     int var, i;
     pcube cf = cube.temp[0], cr = cube.temp[1], cd = cube.temp[2];
     bool savef = false, saved = false, saver = false;
@@ -207,10 +206,8 @@ void parse_pla(std::istream& is, pPLA PLA) {
 
     lineno = 1;
     line_length_error = false;
-    std::cerr << "start loop\n";
     while (is) {
         ch = is.get();
-        std::cerr << ch << std::endl;
 
         switch (ch) {
             case EOF:
@@ -230,7 +227,6 @@ void parse_pla(std::istream& is, pPLA PLA) {
                 word = get_word(is);
                 /* .i gives the cube input size (binary-functions only) */
                 if (word == "i") {
-                    std::cerr << "parse: .i\n";
                     if (cube.fullset != nullptr) {
                         std::cerr << "extra .i ignored\n";
                         skip_line(is, std::cout, /* echo */ false);
@@ -244,7 +240,6 @@ void parse_pla(std::istream& is, pPLA PLA) {
                     }
                     /* .o gives the cube output size (binary-functions only) */
                 } else if (word == "o") {
-                    std::cerr << "parse: .o\n";
                     if (cube.fullset != nullptr) {
                         std::cerr << "extra .o ignored\n";
                         skip_line(is, std::cout, /* echo */ false);
@@ -293,7 +288,6 @@ void parse_pla(std::istream& is, pPLA PLA) {
                     }
                     /* .p gives the number of product terms -- we ignore it */
                 } else if (word == "p") {
-                    std::cerr << "parse: .p\n";
                     is >> np;
                     /* .e and .end specify the end of the file */
                 } else if (word == "e" || word == "end") {
@@ -540,7 +534,6 @@ int read_pla(std::istream& is, int needs_dcset, int needs_offset, int pla_type,
 
     /* Check for nothing on the file -- implies reached EOF */
     if (PLA->F == NULL) {
-        std::cerr << "whatt??\n";
         return EOF;
     }
 

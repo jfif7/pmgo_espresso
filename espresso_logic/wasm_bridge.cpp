@@ -13,8 +13,9 @@ extern "C" {
 #if __EMSCRIPTEN__
 EMSCRIPTEN_KEEPALIVE
 #endif
-const char *run_espresso(const std::string &input) {
-    std::cout << "This is C++!\n" << input << '\n';
+const char *run_espresso(const char *input_char) {
+    std::string input(input_char);
+    std::cout << "This is C++!\n" << std::endl;
     std::istringstream is(input);
     espresso_bridge(is);
     return "what?";
