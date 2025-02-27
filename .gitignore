@@ -9,3 +9,9 @@ build/
 
 # GoogleTest
 _deps/
+
+# Next.js
+.next/
+node_modules/
+dist/
+package-lock.json
