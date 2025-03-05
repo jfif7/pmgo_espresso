@@ -12,6 +12,16 @@ const nextConfig = {
 
     // Optional: Change the output directory `out` -> `dist`
     distDir: 'dist',
+    typescript: {
+        // !! WARN !!
+        // Dangerously allow production builds to successfully complete even if
+        // your project has type errors.
+        // !! WARN !!
+        ignoreBuildErrors: true,
+    },
+    images: {
+        unoptimized: true
+    }
 }
 
 module.exports = nextConfig

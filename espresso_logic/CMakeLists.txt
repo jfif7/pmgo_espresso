@@ -54,5 +54,8 @@ add_executable(wasm_bridge ${SOURCES})
 set_target_properties(wasm_bridge PROPERTIES LINK_FLAGS
     "-s EXPORTED_FUNCTIONS=['_run_espresso','_allocate_cpp','_free_cpp'] -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap','stringToUTF8','UTF8ToString']")
 
+target_link_options(wasm_bridge PRIVATE
+  --emit-tsd "$<TARGET_FILE_DIR:wasm_bridge>/wasm_bridge.d.ts" # or wherever else you want it to go
+)
 
 # target_link_libraries(wasm_bridge PRIVATE espresso_lib)

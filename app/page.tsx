@@ -1,0 +1,142 @@
+'use client'
+import { useState, useEffect } from "react"
+import Head from 'next/head'
+import Script from 'next/script'
+import PokemonList from './pokemon-list'
+import { fetchGameMaster, fetchCup } from "@/lib/fetch-data"
+import { Format } from "@/types/pokemon"
+declare const Module: any;
+
+function Header() {
+  return (
+    <div>
+      <h1>Pokemon Go Espresso</h1>
+    </div>
+  )
+}
+
+export default function HomePage() {
+  const [gamemaster, setGamemaster] = useState([])
+  const [rankingData, setRankingData] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [selectedFormat, setSelectedFormat] = useState({
+    "id":"1500",
+    "cup":"all",
+    "cp":1500
+  })
+
+  let run_espresso, allocate, free
+  const defaultString = `.i 2
+.o 2
+.p 4
+00 10
+01 01
+11 -1
+10 1-
+.e`
+
+  function onSubmit() {
+    // Prepare input
+    const input = (document.getElementById("inputText") as HTMLInputElement).value
+    console.log(input)
+    console.log(input.length)
+    const buffer_size = input.length + 1
+    const inputPtr = allocate(buffer_size)
+    Module.stringToUTF8(input, inputPtr, buffer_size)
+    // Call
+    const resultPtr = run_espresso(inputPtr)
+    // Reading output
+    const result = Module.UTF8ToString(resultPtr)
+    console.log(result)
+    console.log("result len:", result.length)
+    document.getElementById("outputText").innerText = `Return: ${result}`
+    // Cleanup
+    free(inputPtr)
+    free(resultPtr)
+  }
+
+  function doubleString() {
+    const e = document.getElementById("inputText") as HTMLInputElement
+    e.value += e.value
+  }
+
+  async function loadPokemonData(format: Format) {
+    setLoading(true)
+    try {
+      const gm = await fetchGameMaster()
+      setGamemaster(gm)
+      const cup = await fetchCup(format.cup, format.cp)
+      setRankingData(cup)
+    } catch (error) {
+      console.error("Error loading Pokemon data:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => { loadPokemonData(selectedFormat) }, [selectedFormat])
+
+  useEffect(() => {
+    const loadWasm = async () => {
+      const script = document.createElement('script')
+      script.src = '/espresso_bin/wasm_bridge.js'
+      script.async = true
+      script.onload = async () => {
+        run_espresso = Module.cwrap("run_espresso", "number", ["number"])
+        allocate = Module.cwrap("allocate_cpp", "number", ["number"])
+        free = Module.cwrap("free_cpp", null, ["number"])
+      }
+      document.body.appendChild(script)
+    }
+
+    loadWasm()
+  }, [])
+
+  let pokemonList = rankingData.map((pvp_mon, index) => {
+    let p = gamemaster.find(p => p.speciesId === pvp_mon.speciesId)
+    if (p) {
+      p.rank = index + 1
+    }
+    return p
+  }).slice(0, 300)
+
+  let formats:Format[] = [
+    {
+      "id":"1500",
+      "cup":"all",
+      "cp":1500
+    },
+    {
+      "id":"2500",
+      "cup":"all",
+      "cp":2500
+    },
+    {
+      "id":"10000",
+      "cup":"all",
+      "cp":10000
+    }
+  ]
+
+  return (
+    <div>
+      <Header />
+      <select onChange={e => setSelectedFormat(formats.find((f) => f.id === e.target.value))} defaultValue={"1500"}>
+        {formats.map((format)=>{
+          return (
+            <option value={format.id} key={format.id}>{format.id}</option>
+          )
+        })}
+      </select>
+      <PokemonList pokemonList={pokemonList}/>
+      <h2>Enter Input:</h2>
+      <textarea id="inputText" rows={4} cols={50} defaultValue={defaultString} />
+      <br />
+      <button onClick={onSubmit}>Submit</button>
+      <button onClick={doubleString}>Double</button>
+      <h3>Output:</h3>
+      <pre id="outputText"></pre>
+
+    </div>
+  )
+}
