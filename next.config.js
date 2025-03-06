@@ -21,7 +21,10 @@ const nextConfig = {
     },
     images: {
         unoptimized: true
-    }
+    },
+    experimental: {
+        reactCompiler: true,
+    },
 }
 
 module.exports = nextConfig

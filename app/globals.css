@@ -1,72 +1,128 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #0f1729;
+@theme {
+  --color-background: #ffffff;
+  --color-foreground: #0f1729;
 
-  --card: #ffffff;
-  --card-foreground: #0f1729;
+  --color-card: #ffffff;
+  --color-card-foreground: #0f1729;
 
-  --popover: #ffffff;
-  --popover-foreground: #0f1729;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #0f1729;
 
-  --primary: #18181b;
-  --primary-foreground: #f8fafc;
+  --color-primary: #18181b;
+  --color-primary-foreground: #f8fafc;
 
-  --secondary: #f1f5f9;
-  --secondary-foreground: #18181b;
+  --color-secondary: #f1f5f9;
+  --color-secondary-foreground: #18181b;
 
-  --muted: #363636;
-  --muted-foreground: #64748b;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
 
-  --accent: #f1f5f9;
-  --accent-foreground: #18181b;
+  --color-accent: #f1f5f9;
+  --color-accent-foreground: #18181b;
 
-  --destructive: #ef4444;
-  --destructive-foreground: #f8fafc;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #f8fafc;
 
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --ring: #0f1729;
+  --color-border: #e2e8f0;
+  --color-input: #e2e8f0;
+  --color-ring: #0f1729;
 
-  --radius: 0.5rem;
+  --color-radius: 0.5rem;
 }
 
 .dark {
-  --background: #0f1729;
-  --foreground: #f8fafc;
+  --color-background: #0f1729;
+  --color-foreground: #f8fafc;
 
-  --card: #0f1729;
-  --card-foreground: #f8fafc;
+  --color-card: #0f1729;
+  --color-card-foreground: #f8fafc;
 
-  --popover: #0f1729;
-  --popover-foreground: #f8fafc;
+  --color-popover: #0f1729;
+  --color-popover-foreground: #f8fafc;
 
-  --primary: #f8fafc;
-  --primary-foreground: #18181b;
+  --color-primary: #f8fafc;
+  --color-primary-foreground: #18181b;
 
-  --secondary: #1e293b;
-  --secondary-foreground: #f8fafc;
+  --color-secondary: #1e293b;
+  --color-secondary-foreground: #f8fafc;
 
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
+  --color-muted: #1e293b;
+  --color-muted-foreground: #94a3b8;
 
-  --accent: #1e293b;
-  --accent-foreground: #f8fafc;
+  --color-accent: #1e293b;
+  --color-accent-foreground: #f8fafc;
 
-  --destructive: #7f1d1d;
-  --destructive-foreground: #f8fafc;
+  --color-destructive: #7f1d1d;
+  --color-destructive-foreground: #f8fafc;
 
-  --border: #1e293b;
-  --input: #1e293b;
-  --ring: #cbd5e1;
+  --color-border: #1e293b;
+  --color-input: #1e293b;
+  --color-ring: #cbd5e1;
 }
 
 * {
-  border-color: var(--border);
+  border-color: var(--color-border);
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
+/* Pokemon type colors */
+.bg-normal {
+  background-color: #a8a878;
+}
+.bg-fire {
+  background-color: #f08030;
+}
+.bg-water {
+  background-color: #6890f0;
+}
+.bg-electric {
+  background-color: #f8d030;
+}
+.bg-grass {
+  background-color: #78c850;
+}
+.bg-ice {
+  background-color: #98d8d8;
+}
+.bg-fighting {
+  background-color: #c03028;
+}
+.bg-poison {
+  background-color: #a040a0;
+}
+.bg-ground {
+  background-color: #e0c068;
+}
+.bg-flying {
+  background-color: #a890f0;
+}
+.bg-psychic {
+  background-color: #f85888;
+}
+.bg-bug {
+  background-color: #a8b820;
+}
+.bg-rock {
+  background-color: #b8a038;
+}
+.bg-ghost {
+  background-color: #705898;
+}
+.bg-dragon {
+  background-color: #7038f8;
+}
+.bg-dark {
+  background-color: #705848;
+}
+.bg-steel {
+  background-color: #b8b8d0;
+}
+.bg-fairy {
+  background-color: #ee99ac;
 }
