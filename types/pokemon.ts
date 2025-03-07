@@ -1,3 +1,5 @@
+import { ThresholdSetting } from "./userData"
+
 export interface Pokemon {
   dex: number
   speciesId: string
@@ -8,13 +10,19 @@ export interface Pokemon {
     def: number
     hp: number
   }
-  fastMoves?: string[]
-  chargedMoves?: string[]
   rank: number
+  needXL: boolean
+  hasXL: boolean
+  hasCandidate: boolean
+  threshold: ThresholdSetting
 }
+
+export type CP = 500 | 1500 | 2500 | 10000
+export type PokemonID = string
+export type PokemonFamilyID = string
 
 export interface Format {
   id: string
-  cup: string
-  cp: number
+  cup: "all"
+  cp: CP
 }

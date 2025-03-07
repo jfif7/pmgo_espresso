@@ -3,9 +3,12 @@ import { useState, useEffect } from "react"
 import Head from "next/head"
 import Script from "next/script"
 import PokemonList from "./pokemon-list"
-import { fetchGameMaster, fetchCup } from "@/lib/fetch-data"
-import { Format } from "@/types/pokemon"
-import { BoxData } from "@/types/userData"
+import { fetchGameMaster, fetchFormat, useCommitCheck } from "@/lib/fetch-data"
+import { Format, PokemonID, PokemonFamilyID } from "@/types/pokemon"
+import { UserData } from "@/types/userData"
+import { useUserData } from "@/lib/user-data"
+import { UpdatePopup } from "@/components/update-popup"
+
 declare const Module: any
 
 function Header() {
@@ -30,13 +33,16 @@ export default function HomePage() {
     cup: "all",
     cp: 1500,
   })
-  const [box, setBox] = useState<BoxData>({
-    500: new Set<string>(),
-    1500: new Set<string>(),
-    2500: new Set<string>(),
-    10000: new Set<string>(),
-    XL: new Set<string>(),
-  })
+  const { updateStatus, updateData, dismissUpdate, reloadPage } =
+    useCommitCheck()
+  const {
+    userData,
+    updateStringSetting,
+    updateFormatSetting,
+    addToBox,
+    removeFromBox,
+    updateThreshold,
+  } = useUserData()
 
   let run_espresso, allocate, free
   const defaultString = `.i 2
@@ -72,15 +78,15 @@ export default function HomePage() {
   function doubleString() {
     const e = document.getElementById("inputText") as HTMLInputElement
     e.value += e.value
-  }
+ } 
 
   async function loadPokemonData(format: Format) {
     setLoading(true)
     try {
       const gm = await fetchGameMaster()
       setGamemaster(gm)
-      const cup = await fetchCup(format.cup, format.cp)
-      setRankingData(cup)
+      const format_data = await fetchFormat(format.cup, format.cp)
+      setRankingData(format_data)
     } catch (error) {
       console.error("Error loading Pokemon data:", error)
     } finally {
@@ -153,6 +159,7 @@ export default function HomePage() {
           )
         })}
       </select>
+      <div>{JSON.stringify(rankingData[0])}</div>
       <PokemonList pokemonList={pokemonList} />
       <h2>Enter Input:</h2>
       <textarea
@@ -166,6 +173,14 @@ export default function HomePage() {
       <button onClick={doubleString}>Double</button>
       <h3>Output:</h3>
       <pre id="outputText"></pre>
+      {updateStatus && (
+        <UpdatePopup
+          status={updateStatus}
+          onUpdate={updateData}
+          onReload={reloadPage}
+          onClose={dismissUpdate}
+        />
+      )}
     </div>
   )
 }

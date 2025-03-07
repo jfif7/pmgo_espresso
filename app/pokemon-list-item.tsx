@@ -29,6 +29,9 @@ function CmpPokemonListItemProps(
   if (prev.pokemon.speciesId != next.pokemon.speciesId) {
     return false
   }
+  if (prev.pokemon.rank != next.pokemon.rank) {
+    return false
+  }
   return true
 }
 
@@ -41,7 +44,9 @@ function PokemonListItem({
 
   const [hasCandy, setHasCandy] = useState(false)
 
-  function handleClick() {
+  const [brokenImg, setBrokenImg] = useState(false)
+
+  function handleExpandClick() {
     setExpanding(expanded ? "" : pokemon.speciesId)
   }
 
@@ -66,10 +71,13 @@ function PokemonListItem({
             <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-muted">
               <Image
                 src={
+                  brokenImg ?
+                  `https://cdn.jsdelivr.net/gh/PokeMiners/pogo_assets/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm1000.icon.png`:
                   pokemon.sprite_url ||
                   `https://cdn.jsdelivr.net/gh/PokeMiners/pogo_assets/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm${pokemon.dex}.icon.png`
                 }
                 alt={pokemon.speciesName}
+                onError={()=>{setBrokenImg(true)}}
                 fill
                 className="object-cover scale-125"
               />
@@ -77,7 +85,7 @@ function PokemonListItem({
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-medium capitalize">
-                  {pokemon.speciesName}
+                  #{pokemon.rank} {pokemon.speciesName}
                 </h3>
                 {pokemon.needXL && (
                   <Badge
@@ -140,7 +148,7 @@ function PokemonListItem({
               </div>
             )}
             <button
-              onClick={handleClick}
+              onClick={handleExpandClick}
               className="ml-2 p-1 rounded-full hover:bg-muted transition-colors"
               aria-label={expanded ? "Collapse details" : "Expand details"}
             >
@@ -226,7 +234,7 @@ function PokemonListItem({
                   className="w-full"
                 >
                   <TabsList className="grid w-full grid-cols-4">
-                    <TabsTrigger value="default">Same as cup</TabsTrigger>
+                    <TabsTrigger value="default">Same as format</TabsTrigger>
                     <TabsTrigger value="percentRank">% Rank</TabsTrigger>
                     <TabsTrigger value="absoluteRank">Abs Rank</TabsTrigger>
                     <TabsTrigger value="percentStatProd">% Stat</TabsTrigger>
