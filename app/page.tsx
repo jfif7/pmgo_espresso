@@ -4,7 +4,13 @@ import Head from "next/head"
 import Script from "next/script"
 import PokemonList from "./pokemon-list"
 import { fetchGameMaster, fetchFormat, useCommitCheck } from "@/lib/fetch-data"
-import { Format, PokemonID, PokemonFamilyID } from "@/types/pokemon"
+import {
+  Format,
+  PokemonID,
+  PokemonFamilyID,
+  GamemasterPokemon,
+  Pokemon,
+} from "@/types/pokemon"
 import { UserData } from "@/types/userData"
 import { useUserData } from "@/lib/user-data"
 import { UpdatePopup } from "@/components/update-popup"
@@ -25,8 +31,8 @@ function Header() {
 }
 
 export default function HomePage() {
-  const [gamemaster, setGamemaster] = useState([])
-  const [rankingData, setRankingData] = useState([])
+  const [gamemaster, setGamemaster] = useState<GamemasterPokemon[]>([])
+  const [rankingData, setRankingData] = useState<PokemonID[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedFormat, setSelectedFormat] = useState<Format>({
     id: "1500",
@@ -78,7 +84,7 @@ export default function HomePage() {
   function doubleString() {
     const e = document.getElementById("inputText") as HTMLInputElement
     e.value += e.value
- } 
+  }
 
   async function loadPokemonData(format: Format) {
     setLoading(true)
@@ -114,13 +120,29 @@ export default function HomePage() {
     loadWasm()
   }, [])
 
-  let pokemonList = rankingData
-    .map((pvp_mon, index) => {
-      let p = gamemaster.find((p) => p.speciesId === pvp_mon.speciesId)
+  let pokemonList: Pokemon[] = rankingData
+    .map((speciesId, index) => {
+      let p = gamemaster.find((p) => p.speciesId === speciesId)
       if (p) {
-        p.rank = index + 1
+        return {
+          dex: p.dex,
+          speciesId: p.speciesId,
+          speciesName: p.speciesName,
+          types: p.types,
+          baseStats: p.baseStats,
+          rank: index + 1,
+          needXL:
+            selectedFormat.cp == 10000
+              ? true
+              : p.needXL[`cp${selectedFormat.cp}`],
+          hasXL: true, // TODO
+          hasCandidate: true, // TODO
+          threshold: null, // TODO
+        } as Pokemon
       }
-      return p
+      return {
+        dex: -1,
+      } as Pokemon
     })
     .slice(0, 300)
 

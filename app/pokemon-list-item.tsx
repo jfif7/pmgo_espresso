@@ -56,7 +56,7 @@ function PokemonListItem({
 
   const handleThresholdTypeChange = (value: string) => {}
 
-  const handleThresholdValueChange = (value: number[]) => {}
+  const handleThresholdValueChange = (value: number) => {}
 
   const handleReset = () => {}
 
@@ -71,13 +71,15 @@ function PokemonListItem({
             <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-muted">
               <Image
                 src={
-                  brokenImg ?
-                  `https://cdn.jsdelivr.net/gh/PokeMiners/pogo_assets/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm1000.icon.png`:
-                  pokemon.sprite_url ||
-                  `https://cdn.jsdelivr.net/gh/PokeMiners/pogo_assets/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm${pokemon.dex}.icon.png`
+                  brokenImg
+                    ? `https://cdn.jsdelivr.net/gh/PokeMiners/pogo_assets/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm1000.icon.png`
+                    : pokemon.sprite_url ||
+                      `https://cdn.jsdelivr.net/gh/PokeMiners/pogo_assets/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm${pokemon.dex}.icon.png`
                 }
                 alt={pokemon.speciesName}
-                onError={()=>{setBrokenImg(true)}}
+                onError={() => {
+                  setBrokenImg(true)
+                }}
                 fill
                 className="object-cover scale-125"
               />
@@ -136,7 +138,7 @@ function PokemonListItem({
               <div className="flex items-center gap-2">
                 <Checkbox
                   id={`candy-${pokemon.speciesName}`}
-                  checked={pokemon.hasCandy}
+                  checked={pokemon.hasXL}
                   onCheckedChange={handleCandyChange}
                 />
                 <Label

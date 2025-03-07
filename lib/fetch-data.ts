@@ -1,33 +1,147 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { CP } from "@/types/pokemon"
+import {
+  CP,
+  PokemonID,
+  PokemonType,
+  GamemasterPokemonTag,
+  PokemonFamilyID,
+  GamemasterPokemon,
+} from "@/types/pokemon"
 import { UpdateStatus } from "@/types/userData"
 
 const COMMIT_HASH_KEY = "pvpoke-commit-hash"
 const LAST_CHECK_KEY = "pvpoke-last-check"
 
-export async function fetchGameMaster(forceRefresh = false): Promise<any> {
+interface RawGamemasterPokemon {
+  dex: number
+  speciesId: PokemonID
+  speciesName: string
+  baseStats: {
+    atk: number
+    def: number
+    hp: number
+  }
+  types: [PokemonType, PokemonType]
+  fastMoves: string[]
+  chargedMoves: string[]
+  tags?: GamemasterPokemonTag[]
+  defaultIVs: {
+    cp500: [number, number, number, number]
+    cp1500: [number, number, number, number]
+    cp2500: [number, number, number, number]
+  }
+  eliteMoves?: string[]
+  searchPriority?: number
+  buddyDistance?: number
+  thirdMoveCost?: number | false
+  released: boolean
+  family?: {
+    id: PokemonFamilyID
+    parent?: PokemonID
+    evolutions?: PokemonID[]
+  }
+}
+
+interface RankingPokemon {
+  speciesId: PokemonID
+  speciesName: string
+  rating: number
+  matchups: any[]
+  counters: any[]
+  moves: any
+  moveset: string[]
+  score: number
+  scores: number[]
+  stats: {
+    product: number
+    atk: number
+    def: number
+    hp: number
+  }
+}
+
+type RankingData = RankingPokemon[]
+
+export async function fetchGameMaster(
+  forceRefresh = false
+): Promise<GamemasterPokemon[]> {
   const url =
     "https://raw.githubusercontent.com/pvpoke/pvpoke/refs/heads/master/src/data/gamemaster/pokemon.json"
-  return fetchData("gamemaster", url, forceRefresh)
+  return fetchData("gamemaster", url, forceRefresh, parseGamemaster)
+}
+
+function parseGamemaster(pms: RawGamemasterPokemon[]): GamemasterPokemon[] {
+  const index = pms.reduce((acc, pm) => {
+    acc[pm.speciesId] = pm
+    return acc
+  }, {} as Record<PokemonID, RawGamemasterPokemon>)
+
+  const family = pms.reduce((acc, pm) => {
+    const familyId = pm.family ? pm.family.id : `FAMILY_${pm.dex}`
+    if (!acc[familyId]) {
+      acc[familyId] = []
+    }
+    if (!acc[familyId].includes(pm.dex)) {
+      acc[familyId].push(pm.dex)
+    }
+    return acc
+  }, {} as Record<PokemonFamilyID, number[]>)
+
+  const parsed = pms.map<GamemasterPokemon>((p) => {
+    const familyId = p.family ? p.family.id : `FAMILY_${p.dex}`
+    return {
+      dex: p.dex,
+      speciesId: p.speciesId,
+      speciesName: p.speciesName,
+      baseStats: p.baseStats,
+      types: p.types,
+      tags: p.tags ? p.tags : [],
+      needXL: {
+        cp500: p.defaultIVs.cp500[0] > 40,
+        cp1500: p.defaultIVs.cp1500[0] > 40,
+        cp2500: p.defaultIVs.cp2500[0] > 40,
+      },
+      family: {
+        id: familyId,
+        candidateDexs: getCandidateDexs(p, index),
+        familyDexs: family[familyId],
+      },
+    }
+  })
+  return parsed
+}
+
+function getCandidateDexs(
+  pm: RawGamemasterPokemon,
+  index: Record<PokemonID, RawGamemasterPokemon>
+): number[] {
+  let ret = [pm.dex]
+  while (pm.family && pm.family.parent) {
+    let parent = index[pm.family.parent]
+    ret.push(parent.dex)
+    pm = parent
+  }
+  return ret
 }
 
 export async function fetchFormat(
   cup: string,
   cp: CP,
   forceRefresh = false
-): Promise<any> {
+): Promise<PokemonID[]> {
   const baseUrl =
     "https://raw.githubusercontent.com/pvpoke/pvpoke/refs/heads/master/src/data"
   const url = `${baseUrl}/rankings/${cup}/overall/rankings-${cp}.json`
-  return fetchData(`${cup}-${cp}`, url, forceRefresh, formatParser)
+  return fetchData(`${cup}-${cp}`, url, forceRefresh, parseRankingData)
 }
 
-function formatParser(obj:any):any {
-  return {
-    name:"aaa"
-  }
+function parseRankingData(obj: RankingData): PokemonID[] {
+  const parsed = obj.map((rp) => {
+    return rp.speciesId
+  })
+  return parsed
 }
 
 export async function fetchCommitHash(): Promise<string> {
@@ -59,7 +173,7 @@ export async function fetchData(
   id: string,
   url: string,
   forceRefresh = false,
-  parser?:(_: any)=>any
+  parser?: (_: any) => any
 ): Promise<any> {
   // Check localStorage first if not forcing refresh
   if (!forceRefresh) {

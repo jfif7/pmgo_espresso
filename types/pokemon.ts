@@ -2,7 +2,7 @@ import { ThresholdSetting } from "./userData"
 
 export interface Pokemon {
   dex: number
-  speciesId: string
+  speciesId: PokemonID
   speciesName: string
   types: string[]
   baseStats: {
@@ -20,9 +20,73 @@ export interface Pokemon {
 export type CP = 500 | 1500 | 2500 | 10000
 export type PokemonID = string
 export type PokemonFamilyID = string
+export type PokemonType =
+  | "normal"
+  | "fighting"
+  | "flying"
+  | "poison"
+  | "ground"
+  | "rock"
+  | "bug"
+  | "ghost"
+  | "steel"
+  | "fire"
+  | "water"
+  | "grass"
+  | "electric"
+  | "psychic"
+  | "ice"
+  | "dragon"
+  | "dark"
+  | "fairy"
+  | "none"
 
 export interface Format {
   id: string
   cup: "all"
   cp: CP
+}
+
+export type GamemasterPokemonTag =
+  | "starter"
+  | "shadow"
+  | "shadoweligible"
+  | "mega"
+  | "alolan"
+  | "galarian"
+  | "hisuian"
+  | "mythical"
+  | "legendary"
+  | "paldean"
+  | "regional"
+  | "wildlegendary"
+  | "ultrabeast"
+  | "untradeable"
+  | "duplicate"
+  | "duplicate1500"
+  | "include2500"
+  | "include1500"
+  | "teambuilderexclude"
+
+export interface GamemasterPokemon {
+  dex: number
+  speciesId: PokemonID
+  speciesName: string
+  baseStats: {
+    atk: number
+    def: number
+    hp: number
+  }
+  types: [PokemonType, PokemonType]
+  tags: GamemasterPokemonTag[]
+  needXL: {
+    cp500: boolean
+    cp1500: boolean
+    cp2500: boolean
+  }
+  family: {
+    id: PokemonFamilyID
+    candidateDexs: number[]
+    familyDexs: number[]
+  }
 }
