@@ -21,8 +21,8 @@ interface UserDataContextType {
   updateStringSetting: (id: string, updates: Partial<StringSetting>) => void
   updateFormatSetting: (id: string, updates: Partial<FormatSetting>) => void
   deleteFormatSetting: (id: string) => void
-  addToBox: (key: CP | "XL", id: PokemonID | PokemonFamilyID) => void
-  removeFromBox: (key: CP | "XL", id: PokemonID | PokemonFamilyID) => void
+  addToBox: (key: CPString | "XL", id: PokemonID | PokemonFamilyID) => void
+  removeFromBox: (key: CPString | "XL", id: PokemonID | PokemonFamilyID) => void
   updateThreshold: (
     cpString: CPString,
     id: PokemonID,
@@ -31,6 +31,7 @@ interface UserDataContextType {
 }
 
 const UserDataContext = createContext<UserDataContextType | null>(null)
+UserDataContext.displayName = "UserDataContext"
 
 const USER_DATA_STORAGE_KEY = "pmgo_user_data"
 
@@ -199,36 +200,37 @@ export function UserDataProvider({ children }: { children: ReactNode }) {
   }
 
   // Add a Pokemon to a box
-  const addToBox = (key: CP | "XL", id: PokemonID | PokemonFamilyID) => {
-    const keyString = key === "XL" ? "XL" : `cp${key}`
+  const addToBox = (key: CPString | "XL", id: PokemonID | PokemonFamilyID) => {
     setUserData((prevData) => {
       // Create a new Set to avoid direct mutation
-      const newSet = new Set(prevData.boxes[keyString])
+      const newSet = new Set(prevData.boxes[key])
       newSet.add(id)
 
       return {
         ...prevData,
         boxes: {
           ...prevData.boxes,
-          [keyString]: newSet,
+          [key]: newSet,
         },
       }
     })
   }
 
   // Remove a Pokemon from a box
-  const removeFromBox = (key: CP | "XL", id: PokemonID | PokemonFamilyID) => {
-    const keyString = key === "XL" ? "XL" : `cp${key}`
+  const removeFromBox = (
+    key: CPString | "XL",
+    id: PokemonID | PokemonFamilyID
+  ) => {
     setUserData((prevData) => {
       // Create a new Set to avoid direct mutation
-      const newSet = new Set(prevData.boxes[keyString])
+      const newSet = new Set(prevData.boxes[key])
       newSet.delete(id)
 
       return {
         ...prevData,
         boxes: {
           ...prevData.boxes,
-          [keyString]: newSet,
+          [key]: newSet,
         },
       }
     })
