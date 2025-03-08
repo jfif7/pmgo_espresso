@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react"
 import Head from "next/head"
 import Script from "next/script"
-import PokemonList from "./pokemon-list"
+import PokemonList from "@/components/pokemon-list"
 import { fetchGameMaster, fetchFormat, useCommitCheck } from "@/lib/fetch-data"
 import {
   Format,
@@ -148,6 +148,7 @@ export default function HomePage() {
         return {
           dex: p.dex,
           speciesId: p.speciesId,
+          familyId: p.family.id,
           speciesName: p.speciesName,
           types: p.types,
           baseStats: p.baseStats,

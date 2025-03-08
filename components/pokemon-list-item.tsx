@@ -7,12 +7,10 @@ import Image from "next/image"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Slider } from "@/components/ui/slider"
 import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { BoxData, ThresholdSetting, ThresholdType } from "@/types/userData"
+import { ThresholdSetting } from "@/types/userData"
+import { PokemonLIThreshold } from "./pokemon-li-threshold"
 
 interface PokemonListItemProps {
   listIndex: number
@@ -20,8 +18,8 @@ interface PokemonListItemProps {
   expanded: boolean
   setExpanding: Function
   selectedCP: CP
-  addToBox: (cp: CP, id: PokemonID | PokemonFamilyID) => void
-  removeFromBox: (cp: CP, id: PokemonID | PokemonFamilyID) => void
+  addToBox: (cp: CP | "XL", id: PokemonID | PokemonFamilyID) => void
+  removeFromBox: (cp: CP | "XL", id: PokemonID | PokemonFamilyID) => void
   updateThreshold: (cp: CP, id: PokemonID, threshold: ThresholdSetting) => void
 }
 
@@ -59,38 +57,19 @@ function PokemonListItem({
     setExpanding(expanded ? "" : pokemon.speciesId)
   }
 
-  const handleCandidateChange = (checked: boolean) => {}
-
-  const handleCandyChange = (checked: boolean) => {}
-
-  const handleThresholdTypeChange = (tType: ThresholdType | "default") => {
-    if (tType == "default") {
-      updateThreshold(selectedCP, pokemon.speciesId, null)
-      return
+  const handleCandidateChange = (checked: boolean) => {
+    if (checked) {
+      addToBox(selectedCP, pokemon.speciesId)
+    } else {
+      removeFromBox(selectedCP, pokemon.speciesId)
     }
-    let value = 10
-    if (pokemon.threshold) {
-      value = pokemon.threshold.tValue
-    }
-    const newThreshold: ThresholdSetting = {
-      tType: tType as ThresholdType,
-      tValue: value,
-    }
-    updateThreshold(selectedCP, pokemon.speciesId, newThreshold)
   }
 
-  const handleThresholdValueChange = (value: number) => {
-    const newThreshold = { ...pokemon.threshold }
-    newThreshold.tValue = value
-    updateThreshold(selectedCP, pokemon.speciesId, newThreshold)
+  const handleCandyChange = (checked: boolean) => {
+    if (checked) {
+      addToBox("XL", pokemon.familyId)
+    }
   }
-
-  const handleReset = () => {}
-
-  const localThresholdValue = 10
-
-  const thresholdType = pokemon.threshold?.tType ?? "default"
-  const thresholdVal = pokemon.threshold?.tValue ?? -1
 
   return (
     <Card className="w-full overflow-hidden transition-all duration-300 ease-in-out">
@@ -102,7 +81,7 @@ function PokemonListItem({
               <Image
                 src={
                   brokenImg
-                    ? `https://cdn.jsdelivr.net/gh/PokeMiners/pogo_assets/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm1000.icon.png`
+                    ? `https://i.pinimg.com/736x/3b/c1/56/3bc1566a5c03743d5e90d23794e27ffb.jpg`
                     : pokemon.sprite_url ||
                       `https://cdn.jsdelivr.net/gh/PokeMiners/pogo_assets/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm${pokemon.dex}.icon.png`
                 }
@@ -246,67 +225,11 @@ function PokemonListItem({
                 </div>
               </div>
 
-              {/* Threshold Settings */}
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <h4 className="font-medium">Threshold Settings</h4>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleReset}
-                    className="flex items-center gap-1"
-                  >
-                    <RotateCcw className="h-3 w-3" />
-                    Reset
-                  </Button>
-                </div>
-                <Tabs
-                  defaultValue={thresholdType}
-                  onValueChange={handleThresholdTypeChange}
-                  className="w-full"
-                >
-                  <TabsList className="grid w-full grid-cols-4">
-                    <TabsTrigger value="default">Default</TabsTrigger>
-                    <TabsTrigger value="percentRank">% Rank</TabsTrigger>
-                    <TabsTrigger value="absoluteRank">Abs Rank</TabsTrigger>
-                    <TabsTrigger value="percentStatProd">% Stat</TabsTrigger>
-                  </TabsList>
-                  <TabsContent values={["percentRank"]} className="mt-4">
-                    <div className="space-y-4">
-                      <div className="flex justify-between mb-2">
-                        <Label>Top Percentage: {thresholdVal}%</Label>
-                      </div>
-                    </div>
-                  </TabsContent>
-                  <TabsContent values={["absoluteRank"]} className="mt-4">
-                    <div className="space-y-4">
-                      <div className="flex justify-between mb-2">
-                        <Label>Top Rank: {thresholdVal}</Label>
-                      </div>
-                    </div>
-                  </TabsContent>
-                  <TabsContent values={["percentStatProd"]} className="mt-4">
-                    <div className="space-y-4">
-                      <div className="flex justify-between mb-2">
-                        <Label>Min Stat Product: {thresholdVal}%</Label>
-                      </div>
-                    </div>
-                  </TabsContent>
-                  <TabsContent
-                    values={["percentRank", "absoluteRank", "percentStatProd"]}
-                  >
-                    <div className="space-y-4 p-2">
-                      <Slider
-                        defaultValue={thresholdVal}
-                        min={1}
-                        max={100}
-                        step={1}
-                        onValueChange={handleThresholdValueChange}
-                      />
-                    </div>
-                  </TabsContent>
-                </Tabs>
-              </div>
+              <PokemonLIThreshold
+                pokemon={pokemon}
+                selectedCP={selectedCP}
+                updateThreshold={updateThreshold}
+              />
             </div>
           </div>
         </div>

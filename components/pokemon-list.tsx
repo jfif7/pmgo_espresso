@@ -9,8 +9,8 @@ import { BoxData, ThresholdSetting } from "@/types/userData"
 interface PokemonListProps {
   pokemonList: Pokemon[]
   selectedCP: CP
-  addToBox: (cp: CP, id: PokemonID | PokemonFamilyID) => void
-  removeFromBox: (cp: CP, id: PokemonID | PokemonFamilyID) => void
+  addToBox: (cp: CP | "XL", id: PokemonID | PokemonFamilyID) => void
+  removeFromBox: (cp: CP | "XL", id: PokemonID | PokemonFamilyID) => void
   updateThreshold: (cp: CP, id: PokemonID, threshold: ThresholdSetting) => void
 }
 

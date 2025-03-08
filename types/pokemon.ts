@@ -3,8 +3,9 @@ import { ThresholdSetting } from "./userData"
 export interface Pokemon {
   dex: number
   speciesId: PokemonID
+  familyId: PokemonFamilyID
   speciesName: string
-  types: string[]
+  types: [PokemonType, PokemonType]
   baseStats: {
     atk: number
     def: number
@@ -15,6 +16,7 @@ export interface Pokemon {
   hasXL: boolean
   hasCandidate: boolean
   threshold: ThresholdSetting
+  sprite_url?: string
 }
 
 export type CP = 500 | 1500 | 2500 | 10000

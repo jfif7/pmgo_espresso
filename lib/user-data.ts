@@ -30,7 +30,7 @@ const defaultUserData: UserData = {
 function serializeUserData(userData: UserData): string {
   const serialized = {
     ...userData,
-    box: {
+    boxes: {
       cp500: Array.from(userData.boxes.cp500),
       cp1500: Array.from(userData.boxes.cp1500),
       cp2500: Array.from(userData.boxes.cp2500),
@@ -49,11 +49,11 @@ function deserializeUserData(jsonString: string): UserData {
       strings: parsed.strings || {},
       formats: parsed.formats || {},
       boxes: {
-        cp500: new Set(parsed.box?.cp500 || []),
-        cp1500: new Set(parsed.box?.cp1500 || []),
-        cp2500: new Set(parsed.box?.cp2500 || []),
-        cp10000: new Set(parsed.box?.cp10000 || []),
-        XL: new Set(parsed.box?.XL || []),
+        cp500: new Set(parsed.boxes?.cp500 || []),
+        cp1500: new Set(parsed.boxes?.cp1500 || []),
+        cp2500: new Set(parsed.boxes?.cp2500 || []),
+        cp10000: new Set(parsed.boxes?.cp10000 || []),
+        XL: new Set(parsed.boxes?.XL || []),
       },
       thresholds: parsed.thresholds || {},
     }
@@ -130,36 +130,36 @@ export function useUserData() {
   }
 
   // Add a Pokemon to a box
-  const addToBox = (cp: CP, id: PokemonID | PokemonFamilyID) => {
-    const cpString = `cp${cp}`
+  const addToBox = (key: CP | "XL", id: PokemonID | PokemonFamilyID) => {
+    const keyString = key === "XL" ? "XL" : `cp${key}`
     setUserData((prevData) => {
       // Create a new Set to avoid direct mutation
-      const newSet = new Set(prevData.boxes[cpString])
+      const newSet = new Set(prevData.boxes[keyString])
       newSet.add(id)
 
       return {
         ...prevData,
         boxes: {
           ...prevData.boxes,
-          [cpString]: newSet,
+          [keyString]: newSet,
         },
       }
     })
   }
 
   // Remove a Pokemon from a box
-  const removeFromBox = (cp: CP, id: PokemonID | PokemonFamilyID) => {
-    const cpString = `cp${cp}`
+  const removeFromBox = (key: CP | "XL", id: PokemonID | PokemonFamilyID) => {
+    const keyString = key === "XL" ? "XL" : `cp${key}`
     setUserData((prevData) => {
       // Create a new Set to avoid direct mutation
-      const newSet = new Set(prevData.boxes[cpString])
+      const newSet = new Set(prevData.boxes[keyString])
       newSet.delete(id)
 
       return {
         ...prevData,
         boxes: {
           ...prevData.boxes,
-          [cpString]: newSet,
+          [keyString]: newSet,
         },
       }
     })
