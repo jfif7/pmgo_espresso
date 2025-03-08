@@ -31,7 +31,9 @@ function Header() {
 }
 
 export default function HomePage() {
-  const [gamemaster, setGamemaster] = useState<GamemasterPokemon[]>([])
+  const [gamemaster, setGamemaster] = useState<
+    Record<PokemonID, GamemasterPokemon>
+  >({})
   const [rankingData, setRankingData] = useState<PokemonID[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedFormat, setSelectedFormat] = useState<Format>({
@@ -122,7 +124,7 @@ export default function HomePage() {
 
   let pokemonList: Pokemon[] = rankingData
     .map((speciesId, index) => {
-      let p = gamemaster.find((p) => p.speciesId === speciesId)
+      let p = gamemaster[speciesId]
       if (p) {
         return {
           dex: p.dex,
@@ -181,7 +183,6 @@ export default function HomePage() {
           )
         })}
       </select>
-      <div>{JSON.stringify(rankingData[0])}</div>
       <PokemonList pokemonList={pokemonList} />
       <h2>Enter Input:</h2>
       <textarea

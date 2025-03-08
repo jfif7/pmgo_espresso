@@ -66,13 +66,15 @@ type RankingData = RankingPokemon[]
 
 export async function fetchGameMaster(
   forceRefresh = false
-): Promise<GamemasterPokemon[]> {
+): Promise<Record<PokemonID, GamemasterPokemon>> {
   const url =
     "https://raw.githubusercontent.com/pvpoke/pvpoke/refs/heads/master/src/data/gamemaster/pokemon.json"
   return fetchData("gamemaster", url, forceRefresh, parseGamemaster)
 }
 
-function parseGamemaster(pms: RawGamemasterPokemon[]): GamemasterPokemon[] {
+function parseGamemaster(
+  pms: RawGamemasterPokemon[]
+): Record<PokemonID, GamemasterPokemon> {
   const index = pms.reduce((acc, pm) => {
     acc[pm.speciesId] = pm
     return acc
@@ -89,9 +91,9 @@ function parseGamemaster(pms: RawGamemasterPokemon[]): GamemasterPokemon[] {
     return acc
   }, {} as Record<PokemonFamilyID, number[]>)
 
-  const parsed = pms.map<GamemasterPokemon>((p) => {
+  const parsed = pms.reduce((acc, p) => {
     const familyId = p.family ? p.family.id : `FAMILY_${p.dex}`
-    return {
+    const parsedPm = {
       dex: p.dex,
       speciesId: p.speciesId,
       speciesName: p.speciesName,
@@ -109,7 +111,10 @@ function parseGamemaster(pms: RawGamemasterPokemon[]): GamemasterPokemon[] {
         familyDexs: family[familyId],
       },
     }
-  })
+    acc[p.speciesId] = parsedPm
+    return acc
+  }, {} as Record<PokemonID, GamemasterPokemon>)
+
   return parsed
 }
 
