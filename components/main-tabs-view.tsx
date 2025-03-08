@@ -16,14 +16,10 @@ import CustomFormatDialog from "./custom-format-dialog"
 import { FormatSetting } from "@/types/userData"
 
 // Define the tab types
+
 interface Tab {
   id: string
   label: string
-  value: string
-  removable: boolean
-}
-
-interface FormatTab extends Tab {
   format: FormatSetting
 }
 
@@ -88,18 +84,55 @@ const SummaryContent = () => {
   )
 }
 
+const defaultFormats: FormatSetting[] = [
+  {
+    id: "all/overall/500",
+    name: "Little Cup",
+    cup: "all",
+    category: "overall",
+    cp: 500,
+    active: true,
+    topCut: 100,
+    tType: "percentRank",
+    tValue: 1,
+  },
+  {
+    id: "all/overall/1500",
+    name: "Great League",
+    cup: "all",
+    category: "overall",
+    cp: 1500,
+    active: true,
+    topCut: 100,
+    tType: "percentRank",
+    tValue: 1,
+  },
+  {
+    id: "all/overall/2500",
+    name: "Ultra League",
+    cup: "all",
+    category: "overall",
+    cp: 2500,
+    active: true,
+    topCut: 100,
+    tType: "percentRank",
+    tValue: 1,
+  },
+  {
+    id: "all/overall/10000",
+    name: "Master League",
+    cup: "all",
+    category: "overall",
+    cp: 10000,
+    active: true,
+    topCut: 100,
+    tType: "percentRank",
+    tValue: 1,
+  },
+]
+
 export default function MainTabView() {
-  // Initial tabs and options
-  const [tabs, setTabs] = useState<Tab[]>([
-    { id: "summary", label: "Summary", value: "summary", removable: false },
-  ])
-  const [formatTabs, setFormatTabs] = useState<FormatTab[]>([])
-  const [availableOptions, setAvailableOptions] = useState<string[]>([
-    "500",
-    "1500",
-    "2500",
-    "10000",
-  ])
+  const [tabs, setTabs] = useState<Tab[]>([])
   const [activeTab, setActiveTab] = useState("summary")
   const [isCustomModalOpen, setIsCustomModalOpen] = useState(false)
   const [draggedTab, setDraggedTab] = useState<string | null>(null)
@@ -108,43 +141,29 @@ export default function MainTabView() {
   // Ref for the scrollable container
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
+  const dropDownOptions: FormatSetting[] = defaultFormats.filter((f) => {
+    const tab = tabs.find((t) => t.format.id === f.id)
+    return !tab
+  })
+
   // Add a new tab
-  const addTab = (option: string) => {
-    const newTab: FormatTab = {
-      id: option.toLowerCase(),
-      label: `${option} CP`,
-      value: option,
-      removable: true,
-      format: {
-        id: `${option} CP`,
-        cup: "all",
-        category: "overall",
-        topCut: 100,
-        name: `${option} CP`,
-        cp: 2500,
-        active: true,
-        tType: "percentRank",
-        tValue: 1,
-      },
+  const addTab = (format: FormatSetting) => {
+    const newTab: Tab = {
+      id: format.id,
+      label: format.name,
+      format: format,
     }
 
-    setFormatTabs([...formatTabs, newTab])
-    setActiveTab(option.toLowerCase())
-
-    // Remove the option from available options
-    setAvailableOptions(availableOptions.filter((opt) => opt !== option))
+    setTabs([...tabs, newTab])
+    setActiveTab(newTab.id)
+    setIsCustomModalOpen(false)
   }
 
   // Remove a tab
   const removeTab = (tabId: string) => {
     const tabToRemove = tabs.find((tab) => tab.id === tabId)
 
-    if (tabToRemove && tabToRemove.removable) {
-      // Add the option back to available options if it's a standard option
-      if (["500", "1500", "2500", "10000"].includes(tabToRemove.value)) {
-        setAvailableOptions([...availableOptions, tabToRemove.value].sort())
-      }
-
+    if (tabToRemove) {
       // Remove the tab
       setTabs(tabs.filter((tab) => tab.id !== tabId))
 
@@ -152,22 +171,6 @@ export default function MainTabView() {
       if (activeTab === tabId) {
         setActiveTab("summary")
       }
-    }
-  }
-
-  // Add a custom tab
-  const addCustomTab = (customTabName, customTabValue) => {
-    if (customTabName && customTabValue) {
-      const newTab: Tab = {
-        id: `custom-${Date.now()}`,
-        label: customTabName,
-        value: customTabValue,
-        removable: true,
-      }
-
-      setTabs([...tabs, newTab])
-      setActiveTab(newTab.id)
-      setIsCustomModalOpen(false)
     }
   }
 
@@ -266,13 +269,13 @@ export default function MainTabView() {
             </button>
 
             {/* Scrollable area for other tabs */}
-            {formatTabs.length > 0 && (
+            {tabs.length > 0 && (
               <div
                 className="overflow-x-auto flex-grow mx-1 scrollbar-hide"
                 ref={scrollContainerRef}
               >
                 <div className="flex">
-                  {formatTabs.map((tab) => (
+                  {tabs.map((tab) => (
                     <div
                       key={tab.id}
                       className={cn(
@@ -298,20 +301,18 @@ export default function MainTabView() {
                           <GripVertical className="h-3 w-3 mr-1 cursor-grab" />
                           {tab.label}
                         </span>
-                        {tab.removable && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-5 w-5 absolute -top-2 -right-2 rounded-full"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              removeTab(tab.id)
-                            }}
-                          >
-                            <X className="h-3 w-3" />
-                            <span className="sr-only">Remove tab</span>
-                          </Button>
-                        )}
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-5 w-5 absolute -top-2 -right-2 rounded-full"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            removeTab(tab.id)
+                          }}
+                        >
+                          <X className="h-3 w-3" />
+                          <span className="sr-only">Remove tab</span>
+                        </Button>
                       </button>
                     </div>
                   ))}
@@ -332,27 +333,21 @@ export default function MainTabView() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {availableOptions.map((option) => (
-                <DropdownMenuItem key={option} onClick={() => addTab(option)}>
-                  {option} CP
+              {dropDownOptions.map((format) => (
+                <DropdownMenuItem
+                  key={format.id}
+                  onClick={() => addTab(format)}
+                >
+                  {format.name}
                 </DropdownMenuItem>
               ))}
-              <Dialog
-                open={isCustomModalOpen}
-                onOpenChange={setIsCustomModalOpen}
+              <DropdownMenuItem
+                onClick={(e) => {
+                  setIsCustomModalOpen(true)
+                }}
               >
-                <DialogTrigger asChild>
-                  <DropdownMenuItem
-                    onClick={(e) => {
-                      e.preventDefault()
-                      setIsCustomModalOpen(true)
-                    }}
-                  >
-                    Custom...
-                  </DropdownMenuItem>
-                </DialogTrigger>
-                <CustomFormatDialog addCustomTab={addCustomTab} />
-              </Dialog>
+                Custom...
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -363,21 +358,28 @@ export default function MainTabView() {
         </TabsContent>
 
         {/* Single TabsContent for all non-summary tabs */}
-        {formatTabs.length > 0 && (
+        {tabs.length > 0 && (
           <TabsContent
-            values={formatTabs.map((tab) => {
+            values={tabs.map((tab) => {
               return tab.format.id
             })}
           >
             {activeTab !== "summary" && (
               <TabContentView
-                value={tabs.find((tab) => tab.id === activeTab)?.value || ""}
+                value="Valueeeee"
                 label={tabs.find((tab) => tab.id === activeTab)?.label || ""}
               />
             )}
           </TabsContent>
         )}
       </Tabs>
+
+      {isCustomModalOpen && (
+        <Dialog open={true} onOpenChange={setIsCustomModalOpen}>
+          <DialogTrigger asChild></DialogTrigger>
+          <CustomFormatDialog addCustomTab={addTab} />
+        </Dialog>
+      )}
 
       <style jsx global>{`
         .scrollbar-hide {

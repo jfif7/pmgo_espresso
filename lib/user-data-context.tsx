@@ -179,6 +179,8 @@ export function UserDataProvider({ children }: { children: ReactNode }) {
       const formatIndex = newFormats.findIndex((format) => format.id === id)
       if (formatIndex !== -1) {
         newFormats[formatIndex] = { ...newFormats[formatIndex], ...updates }
+      } else {
+        newFormats.push(updates as FormatSetting)
       }
       return {
         ...prevData,

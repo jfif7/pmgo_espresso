@@ -27,12 +27,22 @@ export interface ThresholdSetting {
   tValue: number
 }
 
+export type Category =
+  | "overall"
+  | "leads"
+  | "closers"
+  | "attackers"
+  | "chargers"
+  | "consistency"
+  | "switches"
+
 export interface FormatSetting extends ThresholdSetting {
   id: string
   name: string
   cup: "all"
+  category: Category
   cp: CP
-  category: "overall"
+  srcUrl?: string
   active: boolean
   topCut: number
 }
