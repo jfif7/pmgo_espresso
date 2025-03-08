@@ -13,7 +13,15 @@ export interface SliderProps extends React.HTMLAttributes<HTMLDivElement> {
   onValueChange?: (value: number) => void
 }
 
-function Slider({ className, defaultValue = 0, max = 100, min = 0, step = 1, onValueChange, ...props }: SliderProps) {
+function Slider({
+  className,
+  defaultValue = 0,
+  max = 100,
+  min = 0,
+  step = 1,
+  onValueChange,
+  ...props
+}: SliderProps) {
   const [value, setValue] = useState(defaultValue)
   const sliderRef = useRef<HTMLDivElement>(null)
 
@@ -28,11 +36,17 @@ function Slider({ className, defaultValue = 0, max = 100, min = 0, step = 1, onV
   return (
     <div
       ref={sliderRef}
-      className={cn("relative flex w-full touch-none select-none items-center", className)}
+      className={cn(
+        "relative flex w-full touch-none select-none items-center",
+        className
+      )}
       {...props}
     >
       <div className="relative w-full h-2 rounded-full bg-muted overflow-hidden">
-        <div className="absolute h-full bg-primary" style={{ width: `${percent}%` }} />
+        <div
+          className="absolute h-full bg-primary"
+          style={{ width: `${percent}%` }}
+        />
       </div>
       <input
         type="range"
@@ -52,4 +66,3 @@ function Slider({ className, defaultValue = 0, max = 100, min = 0, step = 1, onV
 }
 
 export { Slider }
-

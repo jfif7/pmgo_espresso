@@ -88,11 +88,25 @@ export default function HomePage() {
     e.value += e.value
   }
 
-  async function loadPokemonData(format: Format) {
+  async function loadGamemaster() {
     setLoading(true)
     try {
       const gm = await fetchGameMaster()
       setGamemaster(gm)
+    } catch (error) {
+      console.error("Error loading Pokemon data:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    loadGamemaster()
+  }, [])
+
+  async function loadPokemonData(format: Format) {
+    setLoading(true)
+    try {
       const format_data = await fetchFormat(format.cup, format.cp)
       setRankingData(format_data)
     } catch (error) {
@@ -124,7 +138,12 @@ export default function HomePage() {
 
   let pokemonList: Pokemon[] = rankingData
     .map((speciesId, index) => {
-      let p = gamemaster[speciesId]
+      const p = gamemaster[speciesId]
+      const cpKey = `cp${selectedFormat.cp}` as
+        | "cp500"
+        | "cp1500"
+        | "cp2500"
+        | "cp10000"
       if (p) {
         return {
           dex: p.dex,
@@ -133,13 +152,10 @@ export default function HomePage() {
           types: p.types,
           baseStats: p.baseStats,
           rank: index + 1,
-          needXL:
-            selectedFormat.cp == 10000
-              ? true
-              : p.needXL[`cp${selectedFormat.cp}`],
-          hasXL: true, // TODO
-          hasCandidate: true, // TODO
-          threshold: null, // TODO
+          needXL: selectedFormat.cp == 10000 ? true : p.needXL[cpKey],
+          hasXL: userData.boxes.XL.has(p.family.id),
+          hasCandidate: userData.boxes[cpKey].has(p.speciesId),
+          threshold: userData.thresholds[cpKey][p.speciesId] ?? null,
         } as Pokemon
       }
       return {
@@ -183,7 +199,15 @@ export default function HomePage() {
           )
         })}
       </select>
-      <PokemonList pokemonList={pokemonList} />
+      {!loading && (
+        <PokemonList
+          pokemonList={pokemonList}
+          selectedCP={selectedFormat.cp}
+          addToBox={addToBox}
+          removeFromBox={removeFromBox}
+          updateThreshold={updateThreshold}
+        />
+      )}
       <h2>Enter Input:</h2>
       <textarea
         id="inputText"

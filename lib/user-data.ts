@@ -17,13 +17,13 @@ const defaultUserData: UserData = {
   strings: {},
   formats: {},
   boxes: {
-    500: new Set<PokemonID>(),
-    1500: new Set<PokemonID>(),
-    2500: new Set<PokemonID>(),
-    10000: new Set<PokemonID>(),
+    cp500: new Set<PokemonID>(),
+    cp1500: new Set<PokemonID>(),
+    cp2500: new Set<PokemonID>(),
+    cp10000: new Set<PokemonID>(),
     XL: new Set<PokemonFamilyID>(),
   },
-  thresholds: { 500: {}, 1500: {}, 2500: {}, 10000: {} },
+  thresholds: { cp500: {}, cp1500: {}, cp2500: {}, cp10000: {} },
 }
 
 // Helper to serialize Sets for localStorage
@@ -31,10 +31,10 @@ function serializeUserData(userData: UserData): string {
   const serialized = {
     ...userData,
     box: {
-      500: Array.from(userData.boxes[500]),
-      1500: Array.from(userData.boxes[1500]),
-      2500: Array.from(userData.boxes[2500]),
-      10000: Array.from(userData.boxes[10000]),
+      cp500: Array.from(userData.boxes.cp500),
+      cp1500: Array.from(userData.boxes.cp1500),
+      cp2500: Array.from(userData.boxes.cp2500),
+      cp10000: Array.from(userData.boxes.cp10000),
       XL: Array.from(userData.boxes.XL),
     },
   }
@@ -49,10 +49,10 @@ function deserializeUserData(jsonString: string): UserData {
       strings: parsed.strings || {},
       formats: parsed.formats || {},
       boxes: {
-        500: new Set(parsed.box?.[500] || []),
-        1500: new Set(parsed.box?.[1500] || []),
-        2500: new Set(parsed.box?.[2500] || []),
-        10000: new Set(parsed.box?.[10000] || []),
+        cp500: new Set(parsed.box?.cp500 || []),
+        cp1500: new Set(parsed.box?.cp1500 || []),
+        cp2500: new Set(parsed.box?.cp2500 || []),
+        cp10000: new Set(parsed.box?.cp10000 || []),
         XL: new Set(parsed.box?.XL || []),
       },
       thresholds: parsed.thresholds || {},
@@ -130,37 +130,36 @@ export function useUserData() {
   }
 
   // Add a Pokemon to a box
-  const addToBox = (cp: keyof BoxData, id: PokemonID | PokemonFamilyID) => {
+  const addToBox = (cp: CP, id: PokemonID | PokemonFamilyID) => {
+    const cpString = `cp${cp}`
     setUserData((prevData) => {
       // Create a new Set to avoid direct mutation
-      const newSet = new Set(prevData.boxes[cp])
+      const newSet = new Set(prevData.boxes[cpString])
       newSet.add(id)
 
       return {
         ...prevData,
         boxes: {
           ...prevData.boxes,
-          [cp]: newSet,
+          [cpString]: newSet,
         },
       }
     })
   }
 
   // Remove a Pokemon from a box
-  const removeFromBox = (
-    cp: keyof BoxData,
-    id: PokemonID | PokemonFamilyID
-  ) => {
+  const removeFromBox = (cp: CP, id: PokemonID | PokemonFamilyID) => {
+    const cpString = `cp${cp}`
     setUserData((prevData) => {
       // Create a new Set to avoid direct mutation
-      const newSet = new Set(prevData.boxes[cp])
+      const newSet = new Set(prevData.boxes[cpString])
       newSet.delete(id)
 
       return {
         ...prevData,
         boxes: {
           ...prevData.boxes,
-          [cp]: newSet,
+          [cpString]: newSet,
         },
       }
     })
@@ -172,16 +171,17 @@ export function useUserData() {
     id: PokemonID,
     threshold: ThresholdSetting
   ) => {
+    const cpString = `cp${cp}`
     setUserData((prevData) => {
       const updatedThresholds = { ...prevData.thresholds }
       if (threshold === null) {
         /* Delete prevData.thresholds[cp][id] if exists */
-        if (updatedThresholds[cp] && updatedThresholds[cp][id]) {
-          delete updatedThresholds[cp][id]
+        if (updatedThresholds[cpString] && updatedThresholds[cpString][id]) {
+          delete updatedThresholds[cpString][id]
         }
       } else {
-        updatedThresholds[cp] = {
-          ...updatedThresholds[cp],
+        updatedThresholds[cpString] = {
+          ...updatedThresholds[cpString],
           [id]: threshold,
         }
       }

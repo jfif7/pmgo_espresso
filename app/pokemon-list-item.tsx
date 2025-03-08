@@ -1,6 +1,6 @@
 "use client"
 
-import type { Pokemon } from "@/types/pokemon"
+import type { CP, Pokemon, PokemonFamilyID, PokemonID } from "@/types/pokemon"
 import { useState, memo } from "react"
 import { ChevronDown, ChevronUp, RotateCcw, HelpCircle } from "lucide-react"
 import Image from "next/image"
@@ -12,24 +12,33 @@ import { Slider } from "@/components/ui/slider"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { BoxData, ThresholdSetting, ThresholdType } from "@/types/userData"
 
 interface PokemonListItemProps {
+  listIndex: number
   pokemon: Pokemon
   expanded: boolean
   setExpanding: Function
+  selectedCP: CP
+  addToBox: (cp: CP, id: PokemonID | PokemonFamilyID) => void
+  removeFromBox: (cp: CP, id: PokemonID | PokemonFamilyID) => void
+  updateThreshold: (cp: CP, id: PokemonID, threshold: ThresholdSetting) => void
 }
 
 function CmpPokemonListItemProps(
   prev: Readonly<PokemonListItemProps>,
   next: Readonly<PokemonListItemProps>
 ): boolean {
-  if (prev.expanded != next.expanded) {
+  if (prev.expanded !== next.expanded) {
     return false
   }
-  if (prev.pokemon.speciesId != next.pokemon.speciesId) {
+  if (prev.pokemon.speciesId !== next.pokemon.speciesId) {
     return false
   }
-  if (prev.pokemon.rank != next.pokemon.rank) {
+  if (prev.pokemon.rank !== next.pokemon.rank) {
+    return false
+  }
+  if (prev.pokemon.threshold !== next.pokemon.threshold) {
     return false
   }
   return true
@@ -39,11 +48,11 @@ function PokemonListItem({
   pokemon,
   expanded,
   setExpanding,
+  selectedCP,
+  addToBox,
+  removeFromBox,
+  updateThreshold,
 }: PokemonListItemProps) {
-  const [hasCand, setHasCand] = useState(false)
-
-  const [hasCandy, setHasCandy] = useState(false)
-
   const [brokenImg, setBrokenImg] = useState(false)
 
   function handleExpandClick() {
@@ -54,13 +63,34 @@ function PokemonListItem({
 
   const handleCandyChange = (checked: boolean) => {}
 
-  const handleThresholdTypeChange = (value: string) => {}
+  const handleThresholdTypeChange = (tType: ThresholdType | "default") => {
+    if (tType == "default") {
+      updateThreshold(selectedCP, pokemon.speciesId, null)
+      return
+    }
+    let value = 10
+    if (pokemon.threshold) {
+      value = pokemon.threshold.tValue
+    }
+    const newThreshold: ThresholdSetting = {
+      tType: tType as ThresholdType,
+      tValue: value,
+    }
+    updateThreshold(selectedCP, pokemon.speciesId, newThreshold)
+  }
 
-  const handleThresholdValueChange = (value: number) => {}
+  const handleThresholdValueChange = (value: number) => {
+    const newThreshold = { ...pokemon.threshold }
+    newThreshold.tValue = value
+    updateThreshold(selectedCP, pokemon.speciesId, newThreshold)
+  }
 
   const handleReset = () => {}
 
   const localThresholdValue = 10
+
+  const thresholdType = pokemon.threshold?.tType ?? "default"
+  const thresholdVal = pokemon.threshold?.tValue ?? -1
 
   return (
     <Card className="w-full overflow-hidden transition-all duration-300 ease-in-out">
@@ -121,19 +151,6 @@ function PokemonListItem({
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id={`candidate-${pokemon.speciesName}`}
-                checked={pokemon.hasCandidate}
-                onCheckedChange={handleCandidateChange}
-              />
-              <Label
-                htmlFor={`candidate-${pokemon.speciesName}`}
-                className="text-sm"
-              >
-                Candidate
-              </Label>
-            </div>
             {pokemon.needXL && (
               <div className="flex items-center gap-2">
                 <Checkbox
@@ -149,6 +166,19 @@ function PokemonListItem({
                 </Label>
               </div>
             )}
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id={`candidate-${pokemon.speciesName}`}
+                checked={pokemon.hasCandidate}
+                onCheckedChange={handleCandidateChange}
+              />
+              <Label
+                htmlFor={`candidate-${pokemon.speciesName}`}
+                className="text-sm"
+              >
+                Candidate
+              </Label>
+            </div>
             <button
               onClick={handleExpandClick}
               className="ml-2 p-1 rounded-full hover:bg-muted transition-colors"
@@ -199,7 +229,7 @@ function PokemonListItem({
                       </tr>
                     </thead>
                     <tbody>
-                      {/* {pokemon.topIVs.map((iv, index) => ( */}
+                      {/* TODO {pokemon.topIVs.map((iv, index) => ( */}
                       {[[1, 2, 3, 4, 5]].map((iv, index) => (
                         <tr key={index} className="border-b last:border-0">
                           <td className="px-2 py-1 text-sm">{iv[0]}</td>
@@ -231,12 +261,12 @@ function PokemonListItem({
                   </Button>
                 </div>
                 <Tabs
-                  defaultValue={pokemon.thresholdType}
+                  defaultValue={thresholdType}
                   onValueChange={handleThresholdTypeChange}
                   className="w-full"
                 >
                   <TabsList className="grid w-full grid-cols-4">
-                    <TabsTrigger value="default">Same as format</TabsTrigger>
+                    <TabsTrigger value="default">Default</TabsTrigger>
                     <TabsTrigger value="percentRank">% Rank</TabsTrigger>
                     <TabsTrigger value="absoluteRank">Abs Rank</TabsTrigger>
                     <TabsTrigger value="percentStatProd">% Stat</TabsTrigger>
@@ -244,21 +274,21 @@ function PokemonListItem({
                   <TabsContent values={["percentRank"]} className="mt-4">
                     <div className="space-y-4">
                       <div className="flex justify-between mb-2">
-                        <Label>Top Percentage: {localThresholdValue}%</Label>
+                        <Label>Top Percentage: {thresholdVal}%</Label>
                       </div>
                     </div>
                   </TabsContent>
                   <TabsContent values={["absoluteRank"]} className="mt-4">
                     <div className="space-y-4">
                       <div className="flex justify-between mb-2">
-                        <Label>Top Rank: {localThresholdValue}</Label>
+                        <Label>Top Rank: {thresholdVal}</Label>
                       </div>
                     </div>
                   </TabsContent>
                   <TabsContent values={["percentStatProd"]} className="mt-4">
                     <div className="space-y-4">
                       <div className="flex justify-between mb-2">
-                        <Label>Min Stat Product: {localThresholdValue}%</Label>
+                        <Label>Min Stat Product: {thresholdVal}%</Label>
                       </div>
                     </div>
                   </TabsContent>
@@ -267,7 +297,8 @@ function PokemonListItem({
                   >
                     <div className="space-y-4 p-2">
                       <Slider
-                        defaultValue={localThresholdValue}
+                        defaultValue={thresholdVal}
+                        min={1}
                         max={100}
                         step={1}
                         onValueChange={handleThresholdValueChange}

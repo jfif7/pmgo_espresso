@@ -1,15 +1,23 @@
 "use client"
 
-import type { Pokemon } from "@/types/pokemon"
+import type { CP, Pokemon, PokemonFamilyID, PokemonID } from "@/types/pokemon"
 import { useState, useEffect } from "react"
 import { RefreshCw, Search } from "lucide-react"
 import PokemonListItem from "./pokemon-list-item"
+import { BoxData, ThresholdSetting } from "@/types/userData"
 
 interface PokemonListProps {
   pokemonList: Pokemon[]
+  selectedCP: CP
+  addToBox: (cp: CP, id: PokemonID | PokemonFamilyID) => void
+  removeFromBox: (cp: CP, id: PokemonID | PokemonFamilyID) => void
+  updateThreshold: (cp: CP, id: PokemonID, threshold: ThresholdSetting) => void
 }
 
-export default function PokemonList({ pokemonList }: PokemonListProps) {
+export default function PokemonList({
+  pokemonList,
+  ...rest
+}: PokemonListProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [expanding, setExpanding] = useState("")
 
@@ -62,12 +70,14 @@ export default function PokemonList({ pokemonList }: PokemonListProps) {
 
       <div className="space-y-4 p-4 max-w-4xl mx-auto">
         <h2 className="text-2xl font-bold mb-6">Pokemon List</h2>
-        {pokemonList.map((p) => (
+        {pokemonList.map((p, index) => (
           <PokemonListItem
             key={p.speciesId}
+            listIndex={index}
             pokemon={p}
             expanded={expanding == p.speciesId}
             setExpanding={setExpanding}
+            {...rest}
           />
         ))}
       </div>
