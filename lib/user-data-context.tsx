@@ -1,6 +1,12 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react"
 import type {
   UserData,
   BoxData,
@@ -8,14 +14,63 @@ import type {
   StringSetting,
   ThresholdSetting,
 } from "@/types/userData"
+import type { CP, PokemonID, PokemonFamilyID, CPString } from "@/types/pokemon"
 
-import type { CP, PokemonID, PokemonFamilyID } from "@/types/pokemon"
+interface UserDataContextType {
+  userData: UserData
+  updateStringSetting: (id: string, updates: Partial<StringSetting>) => void
+  updateFormatSetting: (id: string, updates: Partial<FormatSetting>) => void
+  deleteFormatSetting: (id: string) => void
+  addToBox: (key: CP | "XL", id: PokemonID | PokemonFamilyID) => void
+  removeFromBox: (key: CP | "XL", id: PokemonID | PokemonFamilyID) => void
+  updateThreshold: (
+    cpString: CPString,
+    id: PokemonID,
+    threshold: ThresholdSetting
+  ) => void
+}
+
+const UserDataContext = createContext<UserDataContextType | null>(null)
 
 const USER_DATA_STORAGE_KEY = "pmgo_user_data"
 
 const defaultUserData: UserData = {
   strings: {},
-  formats: {},
+  formats: [
+    {
+      id: "all/overall/1500",
+      name: "Great League",
+      cup: "all",
+      category: "overall",
+      cp: 1500,
+      active: true,
+      topCut: 100,
+      tType: "percentRank",
+      tValue: 99,
+    },
+    {
+      id: "all/overall/2500",
+      name: "Ultra League",
+      cup: "all",
+      category: "overall",
+      cp: 2500,
+      active: true,
+      topCut: 100,
+      tType: "percentRank",
+      tValue: 99,
+    },
+    {
+      id: "all/overall/10000",
+      name: "Master League",
+      cup: "all",
+      category: "overall",
+      cp: 10000,
+      active: true,
+      topCut: 100,
+      tType: "absoluteRank",
+      tValue: 1,
+    },
+  ],
   boxes: {
     cp500: new Set<PokemonID>(),
     cp1500: new Set<PokemonID>(),
@@ -47,7 +102,7 @@ function deserializeUserData(jsonString: string): UserData {
     const parsed = JSON.parse(jsonString)
     return {
       strings: parsed.strings || {},
-      formats: parsed.formats || {},
+      formats: parsed.formats || [],
       boxes: {
         cp500: new Set(parsed.boxes?.cp500 || []),
         cp1500: new Set(parsed.boxes?.cp1500 || []),
@@ -63,7 +118,7 @@ function deserializeUserData(jsonString: string): UserData {
   }
 }
 
-export function useUserData() {
+export function UserDataProvider({ children }: { children: ReactNode }) {
   const [userData, setUserData] = useState<UserData>(defaultUserData)
   const [isInitialized, setIsInitialized] = useState(false)
 
@@ -117,16 +172,30 @@ export function useUserData() {
 
   // Update a specific format
   const updateFormatSetting = (id: string, updates: Partial<FormatSetting>) => {
-    setUserData((prevData) => ({
-      ...prevData,
-      formats: {
-        ...prevData.formats,
-        [id]: {
-          ...prevData.formats[id],
-          ...updates,
-        },
-      },
-    }))
+    setUserData((prevData) => {
+      const newFormats = [...prevData.formats]
+      // Find format.id === id in newFormats and apply the partial update
+      const formatIndex = newFormats.findIndex((format) => format.id === id)
+      if (formatIndex !== -1) {
+        newFormats[formatIndex] = { ...newFormats[formatIndex], ...updates }
+      }
+      return {
+        ...prevData,
+        newFormats,
+      }
+    })
+  }
+
+  // Update a specific format
+  const deleteFormatSetting = (id: string) => {
+    setUserData((prevData) => {
+      let newFormats = [...prevData.formats]
+      newFormats = newFormats.filter((format) => format.id !== id)
+      return {
+        ...prevData,
+        newFormats,
+      }
+    })
   }
 
   // Add a Pokemon to a box
@@ -167,11 +236,10 @@ export function useUserData() {
 
   // Update (cp, pokemon) specific threshold.
   const updateThreshold = (
-    cp: CP,
+    cpString: CPString,
     id: PokemonID,
     threshold: ThresholdSetting
   ) => {
-    const cpString = `cp${cp}`
     setUserData((prevData) => {
       const updatedThresholds = { ...prevData.thresholds }
       if (threshold === null) {
@@ -192,12 +260,31 @@ export function useUserData() {
     })
   }
 
-  return {
-    userData,
-    updateStringSetting,
-    updateFormatSetting,
-    addToBox,
-    removeFromBox,
-    updateThreshold,
+  return (
+    <UserDataContext.Provider
+      value={{
+        userData,
+        updateStringSetting,
+        updateFormatSetting,
+        deleteFormatSetting,
+        addToBox,
+        removeFromBox,
+        updateThreshold,
+      }}
+    >
+      {children}
+    </UserDataContext.Provider>
+  )
+}
+
+// Custom hook to use the user data context
+export function useUserData() {
+  const context = useContext(UserDataContext)
+  if (context === undefined) {
+    throw new Error("useUserData must be used within a UserDataProvider")
   }
+  if (context === null) {
+    throw new Error("UserDataProvider null?")
+  }
+  return context
 }

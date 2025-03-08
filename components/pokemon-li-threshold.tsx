@@ -1,43 +1,42 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
-import { Pokemon, CP, PokemonID } from "@/types/pokemon"
+import { Pokemon, PokemonID, CPString } from "@/types/pokemon"
 import { ThresholdSetting, ThresholdType } from "@/types/userData"
+import { useUserData } from "@/lib/user-data-context"
 
 interface PokemonLIThresholdProps {
   pokemon: Pokemon
-  selectedCP: CP
-  updateThreshold: (cp: CP, id: PokemonID, threshold: ThresholdSetting) => void
+  cpString: CPString
 }
 
 export function PokemonLIThreshold({
   pokemon,
-  selectedCP,
-  updateThreshold,
+  cpString,
 }: PokemonLIThresholdProps) {
-  const thresholdType = pokemon.threshold?.tType ?? "default"
-  const thresholdVal = pokemon.threshold?.tValue ?? -1
+  const { userData, updateThreshold } = useUserData()
+  const threshold = userData.thresholds[cpString][pokemon.speciesId] ?? {
+    tType: "default",
+    tValue: -1,
+  }
 
-  const handleThresholdTypeChange = (tType: ThresholdType | "default") => {
-    if (tType == "default") {
-      updateThreshold(selectedCP, pokemon.speciesId, null)
+  const handleThresholdTypeChange = (tType: ThresholdType) => {
+    if (tType === "default") {
+      updateThreshold(cpString, pokemon.speciesId, null)
       return
     }
-    let value = 10
-    if (pokemon.threshold) {
-      value = pokemon.threshold.tValue
-    }
+    let value = threshold?.tValue ?? 10
     const newThreshold: ThresholdSetting = {
       tType: tType as ThresholdType,
       tValue: value,
     }
-    updateThreshold(selectedCP, pokemon.speciesId, newThreshold)
+    updateThreshold(cpString, pokemon.speciesId, newThreshold)
   }
 
   const handleThresholdValueChange = (value: number) => {
-    const newThreshold = { ...pokemon.threshold }
+    const newThreshold = { ...threshold }
     newThreshold.tValue = value
-    updateThreshold(selectedCP, pokemon.speciesId, newThreshold)
+    updateThreshold(cpString, pokemon.speciesId, newThreshold)
   }
 
   return (
@@ -46,7 +45,7 @@ export function PokemonLIThreshold({
         <h4 className="font-medium">Threshold Settings</h4>
       </div>
       <Tabs
-        defaultValue={thresholdType}
+        defaultValue={threshold.tType}
         onValueChange={handleThresholdTypeChange}
         className="w-full"
       >
@@ -59,21 +58,21 @@ export function PokemonLIThreshold({
         <TabsContent values={["percentRank"]} className="mt-4">
           <div className="space-y-4">
             <div className="flex justify-between mb-2">
-              <Label>Top Percentage: {thresholdVal}%</Label>
+              <Label>Top Percentage: {threshold.tValue}%</Label>
             </div>
           </div>
         </TabsContent>
         <TabsContent values={["absoluteRank"]} className="mt-4">
           <div className="space-y-4">
             <div className="flex justify-between mb-2">
-              <Label>Top Rank: {thresholdVal}</Label>
+              <Label>Top Rank: {threshold.tValue}</Label>
             </div>
           </div>
         </TabsContent>
         <TabsContent values={["percentStatProd"]} className="mt-4">
           <div className="space-y-4">
             <div className="flex justify-between mb-2">
-              <Label>Min Stat Product: {thresholdVal}%</Label>
+              <Label>Min Stat Product: {threshold.tValue}%</Label>
             </div>
           </div>
         </TabsContent>
@@ -82,7 +81,7 @@ export function PokemonLIThreshold({
         >
           <div className="space-y-4 p-2">
             <Slider
-              defaultValue={thresholdVal}
+              defaultValue={threshold.tValue}
               min={1}
               max={100}
               step={1}

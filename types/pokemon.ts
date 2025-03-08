@@ -13,13 +13,11 @@ export interface Pokemon {
   }
   rank: number
   needXL: boolean
-  hasXL: boolean
-  hasCandidate: boolean
-  threshold: ThresholdSetting
   sprite_url?: string
 }
 
 export type CP = 500 | 1500 | 2500 | 10000
+export type CPString = "cp500" | "cp1500" | "cp2500" | "cp10000"
 export type PokemonID = string
 export type PokemonFamilyID = string
 export type PokemonType =
@@ -42,12 +40,6 @@ export type PokemonType =
   | "dark"
   | "fairy"
   | "none"
-
-export interface Format {
-  id: string
-  cup: "all"
-  cp: CP
-}
 
 export type GamemasterPokemonTag =
   | "starter"

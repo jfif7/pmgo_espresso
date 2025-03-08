@@ -266,6 +266,7 @@ export function useCommitCheck() {
         localStorage.setItem(COMMIT_HASH_KEY, hash)
         console.log("Updating cached data with latest commit:", hash)
       }
+      // TODO
       setUpdateStatus("complete")
     } catch (error) {
       console.error("Error updating data:", error)

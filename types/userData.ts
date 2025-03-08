@@ -1,8 +1,8 @@
-import { PokemonID, PokemonFamilyID } from "@/types/pokemon"
+import { PokemonID, PokemonFamilyID, CP } from "@/types/pokemon"
 
 export interface UserData {
   strings: Record<string, StringSetting>
-  formats: Record<string, FormatSetting>
+  formats: FormatSetting[]
   boxes: BoxData
   thresholds: {
     cp500: Record<PokemonID, ThresholdSetting>
@@ -16,7 +16,11 @@ export interface StringSetting {
   suffix: string
 }
 
-export type ThresholdType = "percentRank" | "absoluteRank" | "percentStatProd"
+export type ThresholdType =
+  | "percentRank"
+  | "absoluteRank"
+  | "percentStatProd"
+  | "default"
 
 export interface ThresholdSetting {
   tType: ThresholdType
@@ -24,9 +28,13 @@ export interface ThresholdSetting {
 }
 
 export interface FormatSetting extends ThresholdSetting {
+  id: string
+  name: string
+  cup: "all"
+  cp: CP
+  category: "overall"
   active: boolean
   topCut: number
-  name: string
 }
 
 export interface BoxData {
@@ -38,3 +46,9 @@ export interface BoxData {
 }
 
 export type UpdateStatus = "available" | "updating" | "complete"
+
+export interface Format {
+  id: string
+  cup: "all"
+  cp: CP
+}

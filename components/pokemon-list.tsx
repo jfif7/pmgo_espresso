@@ -9,14 +9,11 @@ import { BoxData, ThresholdSetting } from "@/types/userData"
 interface PokemonListProps {
   pokemonList: Pokemon[]
   selectedCP: CP
-  addToBox: (cp: CP | "XL", id: PokemonID | PokemonFamilyID) => void
-  removeFromBox: (cp: CP | "XL", id: PokemonID | PokemonFamilyID) => void
-  updateThreshold: (cp: CP, id: PokemonID, threshold: ThresholdSetting) => void
 }
 
 export default function PokemonList({
   pokemonList,
-  ...rest
+  selectedCP,
 }: PokemonListProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [expanding, setExpanding] = useState("")
@@ -45,7 +42,11 @@ export default function PokemonList({
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+      <div className="flex flex-col sm:flex-row mb-6 gap-4 max-w-4xl mx-auto">
+        <div className="relative w-full sm:w-64">
+          <label className="text-muted-foreground">Hide irrelevant</label>
+          <input type="checkbox" className="pl-8" />
+        </div>
         <div className="relative w-full sm:w-64">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <input
@@ -56,16 +57,6 @@ export default function PokemonList({
             className="pl-8"
           />
         </div>
-        <div className="relative w-full sm:w-64">
-          <label className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground">
-            Hide irrelevant
-          </label>
-          <input type="checkbox" className="pl-8" />
-        </div>
-        <button onClick={handleRefresh} className="w-full sm:w-auto">
-          <RefreshCw className="mr-2 h-4 w-4" />
-          Refresh Data
-        </button>
       </div>
 
       <div className="space-y-4 p-4 max-w-4xl mx-auto">
@@ -77,7 +68,7 @@ export default function PokemonList({
             pokemon={p}
             expanded={expanding == p.speciesId}
             setExpanding={setExpanding}
-            {...rest}
+            selectedCP={selectedCP}
           />
         ))}
       </div>

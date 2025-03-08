@@ -1,8 +1,14 @@
 "use client"
 
-import type { CP, Pokemon, PokemonFamilyID, PokemonID } from "@/types/pokemon"
+import type {
+  CP,
+  CPString,
+  Pokemon,
+  PokemonFamilyID,
+  PokemonID,
+} from "@/types/pokemon"
 import { useState, memo } from "react"
-import { ChevronDown, ChevronUp, RotateCcw, HelpCircle } from "lucide-react"
+import { ChevronDown, ChevronUp } from "lucide-react"
 import Image from "next/image"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
@@ -11,6 +17,7 @@ import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 import { ThresholdSetting } from "@/types/userData"
 import { PokemonLIThreshold } from "./pokemon-li-threshold"
+import { useUserData } from "@/lib/user-data-context"
 
 interface PokemonListItemProps {
   listIndex: number
@@ -18,9 +25,6 @@ interface PokemonListItemProps {
   expanded: boolean
   setExpanding: Function
   selectedCP: CP
-  addToBox: (cp: CP | "XL", id: PokemonID | PokemonFamilyID) => void
-  removeFromBox: (cp: CP | "XL", id: PokemonID | PokemonFamilyID) => void
-  updateThreshold: (cp: CP, id: PokemonID, threshold: ThresholdSetting) => void
 }
 
 function CmpPokemonListItemProps(
@@ -36,9 +40,6 @@ function CmpPokemonListItemProps(
   if (prev.pokemon.rank !== next.pokemon.rank) {
     return false
   }
-  if (prev.pokemon.threshold !== next.pokemon.threshold) {
-    return false
-  }
   return true
 }
 
@@ -47,11 +48,13 @@ function PokemonListItem({
   expanded,
   setExpanding,
   selectedCP,
-  addToBox,
-  removeFromBox,
-  updateThreshold,
 }: PokemonListItemProps) {
   const [brokenImg, setBrokenImg] = useState(false)
+  const { addToBox, removeFromBox, userData } = useUserData()
+
+  const hasXL = userData.boxes.XL.has(pokemon.familyId)
+  const cpString = `cp${selectedCP}` as CPString
+  const hasCandidate = userData.boxes[cpString].has(pokemon.speciesId)
 
   function handleExpandClick() {
     setExpanding(expanded ? "" : pokemon.speciesId)
@@ -134,7 +137,7 @@ function PokemonListItem({
               <div className="flex items-center gap-2">
                 <Checkbox
                   id={`candy-${pokemon.speciesName}`}
-                  checked={pokemon.hasXL}
+                  checked={hasXL}
                   onCheckedChange={handleCandyChange}
                 />
                 <Label
@@ -148,7 +151,7 @@ function PokemonListItem({
             <div className="flex items-center gap-2">
               <Checkbox
                 id={`candidate-${pokemon.speciesName}`}
-                checked={pokemon.hasCandidate}
+                checked={hasCandidate}
                 onCheckedChange={handleCandidateChange}
               />
               <Label
@@ -225,11 +228,7 @@ function PokemonListItem({
                 </div>
               </div>
 
-              <PokemonLIThreshold
-                pokemon={pokemon}
-                selectedCP={selectedCP}
-                updateThreshold={updateThreshold}
-              />
+              <PokemonLIThreshold pokemon={pokemon} cpString={cpString} />
             </div>
           </div>
         </div>

@@ -5,15 +5,14 @@ import Script from "next/script"
 import PokemonList from "@/components/pokemon-list"
 import { fetchGameMaster, fetchFormat, useCommitCheck } from "@/lib/fetch-data"
 import {
-  Format,
   PokemonID,
   PokemonFamilyID,
   GamemasterPokemon,
   Pokemon,
 } from "@/types/pokemon"
-import { UserData } from "@/types/userData"
-import { useUserData } from "@/lib/user-data"
+import { Format } from "@/types/userData"
 import { UpdatePopup } from "@/components/update-popup"
+import MainTabView from "@/components/main-tabs-view"
 
 declare const Module: any
 
@@ -43,14 +42,6 @@ export default function HomePage() {
   })
   const { updateStatus, updateData, dismissUpdate, reloadPage } =
     useCommitCheck()
-  const {
-    userData,
-    updateStringSetting,
-    updateFormatSetting,
-    addToBox,
-    removeFromBox,
-    updateThreshold,
-  } = useUserData()
 
   let run_espresso, allocate, free
   const defaultString = `.i 2
@@ -104,19 +95,18 @@ export default function HomePage() {
     loadGamemaster()
   }, [])
 
-  async function loadPokemonData(format: Format) {
-    setLoading(true)
-    try {
-      const format_data = await fetchFormat(format.cup, format.cp)
-      setRankingData(format_data)
-    } catch (error) {
-      console.error("Error loading Pokemon data:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
   useEffect(() => {
+    async function loadPokemonData(format: Format) {
+      setLoading(true)
+      try {
+        const format_data = await fetchFormat(format.cup, format.cp)
+        setRankingData(format_data)
+      } catch (error) {
+        console.error("Error loading Pokemon data:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
     loadPokemonData(selectedFormat)
   }, [selectedFormat])
 
@@ -154,9 +144,6 @@ export default function HomePage() {
           baseStats: p.baseStats,
           rank: index + 1,
           needXL: selectedFormat.cp == 10000 ? true : p.needXL[cpKey],
-          hasXL: userData.boxes.XL.has(p.family.id),
-          hasCandidate: userData.boxes[cpKey].has(p.speciesId),
-          threshold: userData.thresholds[cpKey][p.speciesId] ?? null,
         } as Pokemon
       }
       return {
@@ -200,14 +187,9 @@ export default function HomePage() {
           )
         })}
       </select>
+      <MainTabView />
       {!loading && (
-        <PokemonList
-          pokemonList={pokemonList}
-          selectedCP={selectedFormat.cp}
-          addToBox={addToBox}
-          removeFromBox={removeFromBox}
-          updateThreshold={updateThreshold}
-        />
+        <PokemonList pokemonList={pokemonList} selectedCP={selectedFormat.cp} />
       )}
       <h2>Enter Input:</h2>
       <textarea
